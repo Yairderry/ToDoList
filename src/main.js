@@ -1,33 +1,42 @@
 "use strict";
 
 const addBtn = document.querySelector('#add-button');
-addBtn.addEventListener('click', addToDo);
+addBtn.addEventListener('click', addToDoContainer);
 
-function addToDo(event) {
+function addToDoContainer(event) {
   const toDoContainer = document.createElement('div');
-  const toDoPriority = document.createElement('div');
-  const toDoCreatedAt = document.createElement('div');
-  const toDoText = document.createElement('div');
+  const input = document.querySelector('#text-input');
   const viewSection = document.querySelector('#view');
 
   toDoContainer.className = 'todo-container';
-  toDoPriority.className = 'todo-priority';
-  toDoText.className = 'todo-text';
 
-  toDoPriority.textContent = getPriority();
-  toDoText.textContent = getTextInput();
-  toDoCreatedAt.textContent = new Date();
-
-  toDoContainer.append(toDoPriority, toDoCreatedAt, toDoText);
+  toDoContainer.append(createToDoPriority(), createToDoCreatedAt(), createToDoText(input));
   viewSection.append(toDoContainer);
+  
+  input.value = '';
+  input.focus();
 }
 
-function getTextInput() {
-  const textInput = document.querySelector('#text-input');
-  return textInput.value;
-}
-
-function getPriority() {
+function createToDoPriority() {
   const priority = document.getElementById('priority-selector');
-  return priority.value;
+  const toDoPriority = document.createElement('div');
+
+  toDoPriority.className = 'todo-priority';
+  toDoPriority.textContent = priority.value;
+  return toDoPriority;
+}
+
+function createToDoText(input) {
+  const toDoText = document.createElement('div');
+
+  toDoText.className = 'todo-text';
+  toDoText.textContent = input.value;
+  return toDoText;
+}
+
+function createToDoCreatedAt() {
+  const toDoCreatedAt = document.createElement('div');
+
+  toDoCreatedAt.textContent = new Date();
+  return toDoCreatedAt;
 }
