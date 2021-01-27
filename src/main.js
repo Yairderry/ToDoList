@@ -10,14 +10,21 @@ if (localStorage.getItem('tasks') === null) {
 }
 
 let tasksJson = JSON.parse(tasksString);
-displayToDoList(tasksString);
+let counts = tasksJson.length;
+
+displayToDoList(tasksJson);
+
 
 const addButton = document.querySelector('#add-button');
+const sortButton = document.querySelector('#sort-button');
 
 addButton.addEventListener('click', addToDoContainer);
+sortButton.addEventListener('click', sortByPriority);
 
 function displayToDoList(toDoList) {
-  for (let task of JSON.parse(toDoList)) {
+  const counter = document.querySelector('#counter');
+  counter.textContent = counts;
+  for (let task of toDoList) {
     createToDoContainer(task);
   }
 }
@@ -31,6 +38,22 @@ function addToDoContainer() {
   
   input.value = '';
   input.focus();
+
+  const counter = document.querySelector('#counter');
+  counter.textContent = ++counts;
+}
+
+function sortByPriority() {
+  const tasksJsonSorted = tasksJson.sort((a, b) => {
+    return b.priority - a.priority;
+  });
+
+  const unsortedTasks = document.querySelectorAll('.todo-container');
+
+  for (let unsortedTask of unsortedTasks) {
+    unsortedTask.parentNode.removeChild(unsortedTask);
+  }
+  displayToDoList(tasksJsonSorted);
 }
 
 function createToDoPriority(priority) {
