@@ -1,18 +1,17 @@
 "use strict";
 
 // check if there's data in the local storage
-let tasksString;
+let tasks = localStorage.getItem('tasks');
 
-if (localStorage.getItem('tasks') === null) {
-  tasksString = "[]"; 
+if (tasks === null) {
+  tasks = []; 
 } else {
-  tasksString = localStorage.getItem('tasks');
+  tasks = JSON.parse(tasks);
 }
 
-let tasksJson = JSON.parse(tasksString);
-let counts = tasksJson.length;
+let counts = tasks.length;
 
-displayToDoList(tasksJson);
+displayToDoList(tasks);
 
 
 const addButton = document.querySelector('#add-button');
@@ -44,7 +43,7 @@ function addToDoContainer() {
 }
 
 function sortByPriority() {
-  const tasksJsonSorted = tasksJson.sort((a, b) => {
+  const tasksSorted = tasks.sort((a, b) => {
     return b.priority - a.priority;
   });
 
@@ -53,7 +52,7 @@ function sortByPriority() {
   for (let unsortedTask of unsortedTasks) {
     unsortedTask.parentNode.removeChild(unsortedTask);
   }
-  displayToDoList(tasksJsonSorted);
+  displayToDoList(tasksSorted);
 }
 
 function createToDoPriority(priority) {
@@ -99,8 +98,8 @@ function createTaskObject(input, priority) {
     "priority": priority.value,
     "date": new Date().toISOString().slice(0, 19).replace('T', ' ')
   }
-  tasksJson.push(task);
+  tasks.push(task);
   localStorage.clear();
-  localStorage.setItem("tasks", JSON.stringify(tasksJson));
+  localStorage.setItem("tasks", JSON.stringify(tasks));
   return task;
 }
