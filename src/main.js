@@ -1,7 +1,8 @@
 "use strict";
 
-const addBtn = document.querySelector('#add-button');
-addBtn.addEventListener('click', addToDoContainer);
+const addButton = document.querySelector('#add-button');
+
+addButton.addEventListener('click', addToDoContainer);
 
 function addToDoContainer(event) {
   const toDoContainer = document.createElement('div');
@@ -37,6 +38,6 @@ function createToDoText(input) {
 function createToDoCreatedAt() {
   const toDoCreatedAt = document.createElement('div');
 
-  toDoCreatedAt.textContent = new Date();
+  toDoCreatedAt.textContent = new Date().toISOString().slice(0, 19).replace('T', ' ');
   return toDoCreatedAt;
 }
