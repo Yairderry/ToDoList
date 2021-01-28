@@ -1,26 +1,31 @@
 "use strict";
-
-// check if there's data in the local storage
-let tasks = localStorage.getItem('tasks');
-
-if (tasks === null) {
-  tasks = []; 
-} else {
-  tasks = JSON.parse(tasks);
+let tasks;
+let counts
+let addButton;
+let sortButton;
+async function start() {
+  tasks = await getPersistent(DB_NAME);
+  if (tasks === null) {
+    tasks = []; 
+  }
+  console.log(tasks);
+  counts = tasks.length;
+  
+  addButton = document.querySelector('#add-button');
+  sortButton = document.querySelector('#sort-button');
+  
+  addButton.addEventListener('click', addToDoContainer);
+  sortButton.addEventListener('click', sortByPriority);
+  document.addEventListener('click', deleteTask);
+  document.addEventListener('click', markTaskDone);
+  displayToDoList(tasks);
 }
+start();
+// check if there's data in the local storage
+ 
 
-let counts = tasks.length;
-
-displayToDoList(tasks);
 
 
-const addButton = document.querySelector('#add-button');
-const sortButton = document.querySelector('#sort-button');
-
-addButton.addEventListener('click', addToDoContainer);
-sortButton.addEventListener('click', sortByPriority);
-document.addEventListener('click', deleteTask);
-document.addEventListener('click', markTaskDone);
 
 function deleteTask(event) {
   const target = event.target;
@@ -34,9 +39,8 @@ function deleteTask(event) {
 
   for (let i = 0; i < tasks.length; i++) {
     if (tasks[i].date === taskDate) {
-      tasks.splice(i, 1)
-      localStorage.clear();
-      localStorage.setItem("tasks", JSON.stringify(tasks));
+      tasks.splice(i, 1);
+      setPersistent(DB_NAME, tasks);
 
       const counter = document.querySelector('#counter');
       counter.textContent = tasks.length;
@@ -57,8 +61,7 @@ function markTaskDone(event) {
   for (let i = 0; i < tasks.length; i++) {
     if (tasks[i].date === taskDate) {
       tasks[i].done = !tasks[i].done;
-      localStorage.clear();
-      localStorage.setItem("tasks", JSON.stringify(tasks));
+      setPersistent(DB_NAME, tasks);
 
       if (tasks[i].done) {
         target.textContent = 'undone';
@@ -159,8 +162,7 @@ function createTaskObject(input, priority) {
   }
   tasks.push(task);
 
-  localStorage.clear();
-  localStorage.setItem("tasks", JSON.stringify(tasks));
+  setPersistent(DB_NAME, tasks);
   return task;
 }
 
