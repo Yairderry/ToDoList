@@ -19,10 +19,30 @@ const sortButton = document.querySelector('#sort-button');
 
 addButton.addEventListener('click', addToDoContainer);
 sortButton.addEventListener('click', sortByPriority);
+document.addEventListener('click', deleteTask)
+
+function deleteTask(event) {
+  const target = event.target;
+  if (target.className !== 'delete-button') return;
+  const toDoContainer = target.parentElement.parentElement;
+  const taskDate = toDoContainer.querySelector('.todo-created-at').textContent;
+  toDoContainer.parentNode.removeChild(toDoContainer);
+
+  for (let i = 0; i < tasks.length; i++) {
+    if (tasks[i].date === taskDate) {
+      tasks.splice(i, 1)
+      localStorage.clear();
+      localStorage.setItem("tasks", JSON.stringify(tasks));
+    }
+  }
+
+}
 
 function displayToDoList(toDoList) {
   const counter = document.querySelector('#counter');
+
   counter.textContent = toDoList.length;
+
   for (let task of toDoList) {
     createToDoContainer(task);
   }
@@ -88,7 +108,8 @@ function createToDoContainer(task) {
   toDoContainer.append(
     createToDoPriority(task['priority']),
     createToDoCreatedAt(task['date']),
-    createToDoText(task['text']));
+    createToDoText(task['text']),
+    createExtraButtons());
   viewSection.appendChild(toDoContainer);
 }
 
@@ -96,7 +117,8 @@ function createTaskObject(input, priority) {
   const task = {
     "text": input.value,
     "priority": priority.value,
-    "date": new Date().toISOString().slice(0, 19).replace('T', ' ')
+    "date": new Date().toISOString().slice(0, 19).replace('T', ' '),
+    "done": false
   }
   tasks.push(task);
 
@@ -104,3 +126,47 @@ function createTaskObject(input, priority) {
   localStorage.setItem("tasks", JSON.stringify(tasks));
   return task;
 }
+
+function createExtraButtons() {
+  const deleteButton = document.createElement('button');
+  const editButton = document.createElement('button');
+  const doneButton = document.createElement('button');
+  const buttonsContainer = document.createElement('div');
+
+  deleteButton.textContent = 'delete';
+  editButton.textContent = 'edit';
+  doneButton.textContent = 'done';
+
+  deleteButton.className = 'delete-button';
+  editButton.className = 'edit-button';
+  doneButton.className = 'done-button';
+
+  buttonsContainer.append(
+    deleteButton,
+    editButton,
+    doneButton)
+  return buttonsContainer;
+}
+
+function checkTasksDone() {
+  const tasksDonePercent = document.querySelector('#tasks-done-percent');
+  let tasksDone = 0;
+
+  for (let task of tasks) {
+    if (task.done) {
+      tasksDone++;
+    }
+  }
+
+  const percentDone = tasksDone / tasks.length;
+  tasksDonePercent.style.width = percentDone + '%';
+}
+
+// function findElementInStorage(date) {
+
+//   for (let task of tasks) {
+//     if (task.date === date) {
+      
+//     }
+//   }
+// }

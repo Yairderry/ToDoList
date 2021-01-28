@@ -9,22 +9,37 @@
   </head>
   <body>
 
-    <section id="control-section">
-      <h1>ToDo List</h1>
-      <p><span id="counter">0</span> Task(s)</p>
-      <input type="text" id="text-input">
-      <select name="" id="priority-selector">
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-        <option value="5">5</option>
-      </select>
-      <button id="add-button">add</button>
-      <button id="sort-button">sort</button>
-    </section>
+    <main>
 
-    <section id="view-section"></section>
+      <section id="control-section">
+        <h1>ToDo List</h1>
+        <p><span id="counter">0</span> Task(s)</p>
+  
+        <div id="tasks-done-container">
+          <div id="legend">
+            <p>done</p>
+            <p>undone</p>
+          </div>
+          <div id="tasks-done-bar">
+            <div id="tasks-done-percent"></div>
+          </div>
+        </div>
+  
+        <input type="text" id="text-input">
+        <select name="" id="priority-selector">
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+        </select>
+        <button id="add-button">add</button>
+        <button id="sort-button">sort</button>
+      </section>
+  
+      <section id="view-section"></section>
+    </main>
+
     <script src="./main.js"></script>
   </body>
 </html>
