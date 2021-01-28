@@ -1,80 +1,49 @@
 "use strict";
 
+// check if there's data in the local storage
+let tasks = localStorage.getItem('tasks');
 
-async function getData(url) {
-  const response = await fetch(url + '/latest');
-  const data = await response.json();
-  console.log(data.record);
-  return data.record;
+if (tasks === null) {
+  tasks = []; 
+} else {
+  tasks = JSON.parse(tasks);
 }
 
+let counts = tasks.length;
 
-async function setData(url, updatedList) {
+displayToDoList(tasks);
 
-  const options = {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(updatedList)
-  };
 
-  const response = await fetch(url, options);
+const addButton = document.querySelector('#add-button');
+const sortButton = document.querySelector('#sort-button');
 
-  if (!response.ok) {
-    console.log(response);
-  }
-  const data = await response.json();
-  console.log(data);
+addButton.addEventListener('click', addToDoContainer);
+sortButton.addEventListener('click', sortByPriority);
 
-}
-
-async function start() {
-  let tryTasks = await getData('https://api.jsonbin.io/v3/b/60127c6d88655a7f320e64b1');
-  if (tryTasks === null) {
-    tryTasks = []; 
-  }
-
-  displayToDoList(tryTasks);
-
-  const addButton = document.querySelector('#add-button');
-  const sortButton = document.querySelector('#sort-button');
-
-  addButton.addEventListener('click', addToDoContainer);
-  sortButton.addEventListener('click', sortByPriority);
-
-}
-
-start();
-
-async function displayToDoList(toDoList) {
+function displayToDoList(toDoList) {
   const counter = document.querySelector('#counter');
   counter.textContent = toDoList.length;
   for (let task of toDoList) {
-    await createToDoContainer(task);
+    createToDoContainer(task);
   }
 }
 
-async function addToDoContainer() {
+function addToDoContainer() {
   const input = document.querySelector('#text-input');
   const priority = document.getElementById('priority-selector');
-  let tryTasks = await getData('https://api.jsonbin.io/v3/b/60127c6d88655a7f320e64b1');
 
-  const task = await createTaskObject(input, priority);
-  await createToDoContainer(task);
+  const task = createTaskObject(input, priority);
+  createToDoContainer(task);
   
-  tryTasks.push(task);
-  await setData('https://api.jsonbin.io/v3/b/60127c6d88655a7f320e64b1', tryTasks);
   input.value = '';
   input.focus();
 
   const counter = document.querySelector('#counter');
-  counter.textContent = tryTasks.length;
+  counter.textContent = tasks.length;
 }
 
-async function sortByPriority() {
-  let tryTasks = await getData('https://api.jsonbin.io/v3/b/60127c6d88655a7f320e64b1');
-  const tasksSorted = tryTasks.sort((a, b) => {
+function sortByPriority() {
+  const tasksSorted = tasks.sort((a, b) => {
     return b.priority - a.priority;
   });
 
@@ -86,7 +55,7 @@ async function sortByPriority() {
   displayToDoList(tasksSorted);
 }
 
-async function createToDoPriority(priority) {
+function createToDoPriority(priority) {
   const toDoPriority = document.createElement('div');
 
   toDoPriority.className = 'todo-priority';
@@ -94,7 +63,7 @@ async function createToDoPriority(priority) {
   return toDoPriority;
 }
 
-async function createToDoText(input) {
+function createToDoText(input) {
   const toDoText = document.createElement('div');
 
   toDoText.className = 'todo-text';
@@ -102,7 +71,7 @@ async function createToDoText(input) {
   return toDoText;
 }
 
-async function createToDoCreatedAt(date) {
+function createToDoCreatedAt(date) {
   const toDoCreatedAt = document.createElement('div');
 
   toDoCreatedAt.className = 'todo-created-at';
@@ -110,25 +79,28 @@ async function createToDoCreatedAt(date) {
   return toDoCreatedAt;
 }
 
-async function createToDoContainer(task) {
+function createToDoContainer(task) {
   const toDoContainer = document.createElement('div');
   const viewSection = document.querySelector('#view-section');
 
   toDoContainer.className = 'todo-container';
 
   toDoContainer.append(
-    await createToDoPriority(task['priority']),
-    await createToDoCreatedAt(task['date']),
-    await createToDoText(task['text']));
+    createToDoPriority(task['priority']),
+    createToDoCreatedAt(task['date']),
+    createToDoText(task['text']));
   viewSection.appendChild(toDoContainer);
 }
 
-async function createTaskObject(input, priority) {
+function createTaskObject(input, priority) {
   const task = {
     "text": input.value,
     "priority": priority.value,
     "date": new Date().toISOString().slice(0, 19).replace('T', ' ')
   }
+  tasks.push(task);
 
+  localStorage.clear();
+  localStorage.setItem("tasks", JSON.stringify(tasks));
   return task;
 }
