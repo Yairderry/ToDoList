@@ -19,22 +19,21 @@ async function start() {
   document.addEventListener('click', deleteTask);
   document.addEventListener('click', markTaskDone);
   document.addEventListener('click', editTask);
-  document.addEventListener("keyup", updateWithEnter);
+  document.addEventListener('click', saveEdits);
+  document.addEventListener("keyup", addWithEnter);
   displayToDoList(tasks);
 }
 start();
 
-
 // handlers
-function updateWithEnter(event) {
+function addWithEnter(event) {
   if (event.key === "Enter") {
     event.preventDefault();
     const textInput = document.querySelector('#text-input').value;
-
+    
     if (textInput !== '') {
       document.querySelector('#add-button').click();
     }
-
   }
 }
 
@@ -45,7 +44,7 @@ function deleteTask(event) {
   
   const toDoContainer = target.parentElement.parentElement;
   const containerIndex = findElementIndexInTasks(toDoContainer);
-
+  
   toDoContainer.parentNode.removeChild(toDoContainer);
   
   tasks.splice(containerIndex, 1);
@@ -81,15 +80,38 @@ function editTask(event) {
   if (target.classList[0] !== 'edit-button') return;
   
   const toDoContainer = target.parentElement.parentElement;
-  const taskPriority = toDoContainer.querySelector('.todo-priority');
-  const taskText = toDoContainer.querySelector('.todo-text');
-  let editBoxes = toDoContainer.querySelectorAll('input');
+  
+  createEditBoxes(toDoContainer);
+}
 
-  if (taskText.querySelector('input') === null) {
-    // editBoxes creates an array of [priorityEditBox, textEditBox]
-    editBoxes = createEditBoxes(taskPriority, taskText);
-    document.removeEventListener('click', editTask);
-  }
+function saveEdits(event) {
+  const target = event.target;
+
+  if (target.classList[0] !== 'save-button') return;
+
+  const taskContainer = event.target.parentElement.parentElement;
+  const editBoxes = taskContainer.querySelectorAll('.edit-box');
+  const toDoPriority = editBoxes[0].parentElement;
+  const toDoText = editBoxes[1].parentElement;
+
+  toDoText.textContent = editBoxes[1].value;
+  toDoPriority.textContent = editBoxes[0].value;
+
+  const editButton = document.createElement('button');
+  editButton.textContent = 'edit';
+  editButton.className = 'edit-button';
+
+  // remove save button and add edit button
+  const saveButton = taskContainer.querySelector('.save-button');
+  const extraButtonsContainer = saveButton.parentElement;
+  extraButtonsContainer.append(editButton);
+  extraButtonsContainer.removeChild(saveButton);
+
+  // save changes in database
+  const taskIndex = findElementIndexInTasks(taskContainer);
+  tasks[taskIndex].priority = editBoxes[0].value;
+  tasks[taskIndex].text = editBoxes[1].value;
+  setPersistent(DB_NAME, tasks);
 }
 
 function addToDoContainer() {
@@ -109,13 +131,19 @@ function addToDoContainer() {
 }
 
 // element-creating functions
-function createEditBoxes(taskPriority, taskText) {
+function createEditBoxes(toDoContainer) {
+  const taskPriority = toDoContainer.querySelector('.todo-priority');
+  const taskText = toDoContainer.querySelector('.todo-text');
   
   const editBoxText = document.createElement('input');
   const editBoxPriority = document.createElement('input');
 
   editBoxText.value = taskText.textContent;
   editBoxPriority.value = taskPriority.textContent;
+
+  editBoxPriority.type = 'number';
+  editBoxPriority.max = 5;
+  editBoxPriority.min = 1;
 
   editBoxText.className = 'edit-box';
   editBoxPriority.className = 'edit-box';
@@ -125,7 +153,17 @@ function createEditBoxes(taskPriority, taskText) {
 
   taskPriority.append(editBoxPriority);
   taskText.append(editBoxText);
-  return [editBoxPriority, editBoxText];
+
+  const saveButton = document.createElement('button');
+  saveButton.textContent = 'save';
+  saveButton.className = 'save-button';
+
+  // remove edit button and add save button
+  const editButton = toDoContainer.querySelector('.edit-button');
+  const extraButtonsContainer = editButton.parentElement;
+  extraButtonsContainer.append(saveButton);
+  extraButtonsContainer.removeChild(editButton);
+  
 }
 
 function createToDoPriority(priority) {
@@ -198,9 +236,9 @@ function createToDoContainer(task) {
     doneButton.className = 'done-button';
     
     buttonsContainer.append(
+      doneButton,
       deleteButton,
-      editButton,
-      doneButton)
+      editButton)
       return buttonsContainer;
     }
     
