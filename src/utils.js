@@ -4,8 +4,6 @@ const URL = "https://api.jsonbin.io/v3/b/6012e048c9033f74c4279575";
 
 // Gets data from persistent storage by the given key and returns it
 async function getPersistent(key) {
-  // const response = localStorage.getItem(key);
-  // return JSON.parse(response);
   const init = {
     method: "GET",
     headers: {
@@ -21,9 +19,6 @@ async function getPersistent(key) {
 // Saves the given data into persistent storage by the given key.
 // Returns 'true' on success.
 async function setPersistent(key, data) {
-  // const dataString = JSON.stringify(data);
-  // localStorage.setItem(key, dataString);
-  // return true;
   const dataObj = {};
   dataObj[key] = data;
   const init = {

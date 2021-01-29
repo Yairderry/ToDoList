@@ -20,12 +20,41 @@ async function start() {
   document.addEventListener('click', markTaskDone);
   document.addEventListener('click', editTask);
   document.addEventListener('click', saveEdits);
+  document.addEventListener('click', searchText);
   document.addEventListener("keyup", addWithEnter);
   displayToDoList(tasks);
 }
 start();
 
 // handlers
+
+function searchText(event) {
+  const target = event.target;
+
+  if (target.id !== 'search-button') return;
+
+  const searchInput = document.querySelector('#search-input');
+  highlight(searchInput.value);
+
+  searchInput.value = '';
+  searchInput.focus();
+}
+
+function highlight(text) {
+  const taskTexts = document.querySelectorAll('.todo-text');
+
+  if (taskTexts.length < 0 || text === '') return;
+
+  for (let taskText of taskTexts) {
+    const taskInnerHTML = taskText.textContent;
+    let index = taskInnerHTML.indexOf(text);
+    if (index >= 0) {
+      let newInnerHTML = `${taskInnerHTML.substring(0,index)}<span class='highlight'>${taskInnerHTML.substring(index,index+text.length)}</span>${taskInnerHTML.substring(index + text.length)}`;
+      taskText.innerHTML = newInnerHTML;
+    }
+  }
+}
+
 function addWithEnter(event) {
   if (event.key === "Enter") {
     event.preventDefault();
@@ -118,7 +147,6 @@ function addToDoContainer() {
   const input = document.querySelector('#text-input');
   const priority = document.getElementById('priority-selector');
   
-  
   const task = createTaskObject(input, priority);
   createToDoContainer(task);
   
@@ -127,7 +155,6 @@ function addToDoContainer() {
   
   updateCounter(tasks);
   checkTasksDone();
-  
 }
 
 // element-creating functions
@@ -163,7 +190,6 @@ function createEditBoxes(toDoContainer) {
   const extraButtonsContainer = editButton.parentElement;
   extraButtonsContainer.append(saveButton);
   extraButtonsContainer.removeChild(editButton);
-  
 }
 
 function createToDoPriority(priority) {

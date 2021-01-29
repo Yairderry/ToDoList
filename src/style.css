@@ -57,3 +57,7 @@ main {
   height: 35px;
   background-color: green;
 }
+
+.highlight {
+  background-color: yellow;
+}
