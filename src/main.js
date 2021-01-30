@@ -51,13 +51,13 @@ function highlight(text) {
     // get all occurrences of a search text in the task
     let textIndexes = [];
     let index = taskInnerHTML.indexOf(text, 0);
+    const numberOfOccurrences = textIndexes.length;
 
     while (index >= 0) {
       textIndexes.push(index);
       index = taskInnerHTML.indexOf(text, index + 1)
     }
 
-    const numberOfOccurrences = textIndexes.length;
     if (numberOfOccurrences === 0) {
       taskText.innerHTML = taskText.textContent;
       return;
