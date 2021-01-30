@@ -3,14 +3,48 @@ html, body {
   height: 100%;
   margin: 0%;
   padding: 0%;
+  display: flex;
+  box-sizing: border-box;
   justify-content: center;
   text-align: center;
+  background: linear-gradient(to right top, rgb(84, 173, 173),  rgb(77, 180, 132));
+
 }
 
 main {
   display: flex;
   flex-direction: column;
   align-items: center;
+  background-color: white;
+  width: 70%;
+  height: 100%;
+  border-radius: 15px;
+  background: linear-gradient(to left bottom, rgb(255, 255, 255, 0.7),  rgb(255, 255, 255, 0.3));
+  z-index: 3;
+  backdrop-filter: blur(0.5rem);
+  box-shadow: 4px 3px 25px -3px rgba(0,0,0,0.4);
+  margin-top: 20px;
+}
+
+.circle1, .circle2 {
+  background-color: white;
+  height: 130px;
+  width: 130px;
+  border-radius: 50%;
+  position: absolute;
+  background: linear-gradient(to left top, rgb(255, 255, 255, 0.8),  rgb(255, 255, 255, 0.6));
+}
+
+.circle1 {
+  top: 5%;
+  right: 10%;
+  height: 170px;
+  width: 170px;
+}
+
+.circle2 {
+  bottom: 20%;
+  left: 10%;
 }
 
 .todo-container {
@@ -38,13 +72,17 @@ main {
   background-color: green;
 }
 
+.done {
+  text-decoration: line-through;
+}
+
 #undone {
   background-color: red;
 }
 
 #tasks-done-bar {
   width: 300px;
-  height: 25px;
+  height: 20px;
   border-radius: 15px;
   overflow: hidden;
   background-color: red;

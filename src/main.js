@@ -37,6 +37,7 @@ function undo(event) {
   tasks = JSON.parse(localStorage.getItem(DB_NAME));
   clearViewSection();
   displayToDoList(tasks);
+  setPersistent(DB_NAME, tasks);
 }
 
 function searchText(event) {
@@ -54,10 +55,13 @@ function searchText(event) {
 function highlight(text) {
   const taskTexts = document.querySelectorAll('.todo-text');
 
-  if (taskTexts.length < 0 || text === '') return;
-
   for (let taskText of taskTexts) {
     const taskInnerHTML = taskText.textContent;
+    
+    if (text === '') {
+      taskText.innerHTML = taskText.textContent;
+      continue;
+    }
 
     // get all occurrences of a search text in the task
     let textIndexes = [];
@@ -122,6 +126,7 @@ function markTaskDone(event) {
   localStorage.setItem(DB_NAME, JSON.stringify(tasks));
   
   const toDoContainer = target.parentElement.parentElement;
+  const toDoText = toDoContainer.querySelector('.todo-text');
   const containerIndex = findElementIndexInTasks(toDoContainer);
   
   tasks[containerIndex].done = !tasks[containerIndex].done;
@@ -129,8 +134,11 @@ function markTaskDone(event) {
   
   if (tasks[containerIndex].done) {
     target.textContent = 'undone';
+    toDoText.className = 'todo-text done';
+    console.log();
   } else {
     target.textContent = 'done';
+    toDoText.className = 'todo-text';
   }
   
   checkTasksDone();
@@ -234,10 +242,15 @@ function createToDoPriority(priority) {
   return toDoPriority;
 }
 
-function createToDoText(input) {
+function createToDoText(input, done) {
   const toDoText = document.createElement('div');
-  
-  toDoText.className = 'todo-text';
+
+  if (done) {
+    toDoText.className = 'todo-text done';
+  } else {
+    toDoText.className = 'todo-text';
+  }
+
   toDoText.textContent = input;
   return toDoText;
 }
@@ -259,7 +272,7 @@ function createToDoContainer(task) {
   toDoContainer.append(
     createToDoPriority(task['priority']),
     createToDoCreatedAt(task['date']),
-    createToDoText(task['text']),
+    createToDoText(task['text'], task['done']),
     createExtraButtons(task['done']));
     viewSection.appendChild(toDoContainer);
   }
