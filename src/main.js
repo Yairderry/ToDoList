@@ -47,11 +47,31 @@ function highlight(text) {
 
   for (let taskText of taskTexts) {
     const taskInnerHTML = taskText.textContent;
-    let index = taskInnerHTML.indexOf(text);
-    if (index >= 0) {
-      let newInnerHTML = `${taskInnerHTML.substring(0,index)}<span class='highlight'>${taskInnerHTML.substring(index,index+text.length)}</span>${taskInnerHTML.substring(index + text.length)}`;
-      taskText.innerHTML = newInnerHTML;
+
+    // get all occurrences of a search text in the task
+    let textIndexes = [];
+    let index = taskInnerHTML.indexOf(text, 0);
+
+    while (index >= 0) {
+      textIndexes.push(index);
+      index = taskInnerHTML.indexOf(text, index + 1)
     }
+
+    const numberOfOccurrences = textIndexes.length;
+    if (numberOfOccurrences === 0) {
+      taskText.innerHTML = taskText.textContent;
+      return;
+    }
+
+    let newInnerHTML = `${taskInnerHTML.substring(0,textIndexes[0])}`;
+
+    for (let i = 0; i < numberOfOccurrences; i++) {
+      
+      newInnerHTML = newInnerHTML + `<span class='highlight'>${text}</span>
+      ${taskInnerHTML.substring(textIndexes[i] + text.length, textIndexes[i + 1])}`
+    }
+
+    taskText.innerHTML = newInnerHTML;
   }
 }
 
