@@ -5,10 +5,11 @@ let addButton;
 let sortButton;
 async function start() {
   tasks = await getPersistent(DB_NAME);
+
   if (tasks === null) {
     tasks = []; 
   }
-  console.log(tasks);
+
   counts = tasks.length;
   
   addButton = document.querySelector('#add-button');
@@ -21,12 +22,22 @@ async function start() {
   document.addEventListener('click', editTask);
   document.addEventListener('click', saveEdits);
   document.addEventListener('click', searchText);
+  document.addEventListener('click', undo);
   document.addEventListener("keyup", addWithEnter);
   displayToDoList(tasks);
 }
 start();
 
 // handlers
+function undo(event) {
+  const target = event.target;
+
+  if (target.id !== 'undo-button') return;
+
+  tasks = JSON.parse(localStorage.getItem(DB_NAME));
+  clearViewSection();
+  displayToDoList(tasks);
+}
 
 function searchText(event) {
   const target = event.target;
@@ -51,24 +62,24 @@ function highlight(text) {
     // get all occurrences of a search text in the task
     let textIndexes = [];
     let index = taskInnerHTML.indexOf(text, 0);
-    const numberOfOccurrences = textIndexes.length;
 
     while (index >= 0) {
       textIndexes.push(index);
       index = taskInnerHTML.indexOf(text, index + 1)
     }
 
+    const numberOfOccurrences = textIndexes.length;
+    
     if (numberOfOccurrences === 0) {
       taskText.innerHTML = taskText.textContent;
-      return;
+      continue;
     }
 
     let newInnerHTML = `${taskInnerHTML.substring(0,textIndexes[0])}`;
 
     for (let i = 0; i < numberOfOccurrences; i++) {
       
-      newInnerHTML = newInnerHTML + `<span class='highlight'>${text}</span>
-      ${taskInnerHTML.substring(textIndexes[i] + text.length, textIndexes[i + 1])}`
+      newInnerHTML = newInnerHTML + `<span class='highlight'>${text}</span>${taskInnerHTML.substring(textIndexes[i] + text.length, textIndexes[i + 1])}`
     }
 
     taskText.innerHTML = newInnerHTML;
@@ -96,6 +107,7 @@ function deleteTask(event) {
   
   toDoContainer.parentNode.removeChild(toDoContainer);
   
+  localStorage.setItem(DB_NAME, JSON.stringify(tasks));
   tasks.splice(containerIndex, 1);
   setPersistent(DB_NAME, tasks);
   
@@ -107,6 +119,7 @@ function markTaskDone(event) {
   const target = event.target;
   
   if (target.classList[0] !== 'done-button') return;
+  localStorage.setItem(DB_NAME, JSON.stringify(tasks));
   
   const toDoContainer = target.parentElement.parentElement;
   const containerIndex = findElementIndexInTasks(toDoContainer);
@@ -135,8 +148,9 @@ function editTask(event) {
 
 function saveEdits(event) {
   const target = event.target;
-
+  
   if (target.classList[0] !== 'save-button') return;
+  localStorage.setItem(DB_NAME, JSON.stringify(tasks));
 
   const taskContainer = event.target.parentElement.parentElement;
   const editBoxes = taskContainer.querySelectorAll('.edit-box');
@@ -250,93 +264,99 @@ function createToDoContainer(task) {
     viewSection.appendChild(toDoContainer);
   }
   
-  function createTaskObject(input, priority) {
-    const task = {
-      "text": input.value,
-      "priority": priority.value,
-      "date": new Date().toISOString().slice(0, 19).replace('T', ' '),
-      "done": false
-    }
-    tasks.push(task);
-    
-    setPersistent(DB_NAME, tasks);
-    return task;
+function createTaskObject(input, priority) {
+  localStorage.setItem(DB_NAME, JSON.stringify(tasks));
+  const task = {
+    "text": input.value,
+    "priority": priority.value,
+    "date": new Date().toISOString().slice(0, 19).replace('T', ' '),
+    "done": false
+  }
+  tasks.push(task);
+  setPersistent(DB_NAME, tasks);
+  return task;
+}
+
+function createExtraButtons(done) {
+  const deleteButton = document.createElement('button');
+  const editButton = document.createElement('button');
+  const doneButton = document.createElement('button');
+  const buttonsContainer = document.createElement('div');
+  
+  deleteButton.textContent = 'delete';
+  editButton.textContent = 'edit';
+  if(done) {
+    doneButton.textContent = 'undone';
+  } else {
+    doneButton.textContent = 'done';
   }
   
-  function createExtraButtons(done) {
-    const deleteButton = document.createElement('button');
-    const editButton = document.createElement('button');
-    const doneButton = document.createElement('button');
-    const buttonsContainer = document.createElement('div');
-    
-    deleteButton.textContent = 'delete';
-    editButton.textContent = 'edit';
-    if(done) {
-      doneButton.textContent = 'undone';
-    } else {
-      doneButton.textContent = 'done';
+  deleteButton.className = 'delete-button';
+  editButton.className = 'edit-button';
+  doneButton.className = 'done-button';
+  
+  buttonsContainer.append(
+    doneButton,
+    deleteButton,
+    editButton)
+    return buttonsContainer;
+}
+  
+// helper functions
+function displayToDoList(toDoList) {
+  
+  for (let task of toDoList) {
+    createToDoContainer(task);
+  }
+  
+  updateCounter(toDoList);
+  checkTasksDone();
+}
+
+function checkTasksDone() {
+  const tasksDonePercent = document.querySelector('#tasks-done-percent');
+  let tasksDone = 0;
+  
+  for (let task of tasks) {
+    if (task.done) {
+      tasksDone++;
     }
-    
-    deleteButton.className = 'delete-button';
-    editButton.className = 'edit-button';
-    doneButton.className = 'done-button';
-    
-    buttonsContainer.append(
-      doneButton,
-      deleteButton,
-      editButton)
-      return buttonsContainer;
+  }
+  
+  const percentDone = Math.floor(tasksDone / tasks.length * 100);
+  tasksDonePercent.style.width = percentDone + '%';
+}
+
+function findElementIndexInTasks(taskContainer) {
+  const taskDate = taskContainer.querySelector('.todo-created-at').textContent;
+  
+  for (let i = 0; i < tasks.length; i++) {
+    if (tasks[i].date === taskDate) {
+      return i;
     }
+  }
+}
+
+function updateCounter(toDoList) {
+  const counter = document.querySelector('#counter');
+  counter.textContent = toDoList.length;
+}
+
+function sortByPriority() {
+  const tasksSorted = tasks.sort((a, b) => {
+    return b.priority - a.priority;
+  });
+  
+  clearViewSection();
+  displayToDoList(tasksSorted);
+}
+
+function clearViewSection() {
+  const allTasks = document.querySelectorAll('.todo-container');
+  
+  for (let task of allTasks) {
+    task.parentNode.removeChild(task);
+  }
+}
+
     
-    // helper functions
-    function displayToDoList(toDoList) {
-      
-      for (let task of toDoList) {
-        createToDoContainer(task);
-      }
-      
-      updateCounter(toDoList);
-      checkTasksDone();
-    }
-    
-    function checkTasksDone() {
-      const tasksDonePercent = document.querySelector('#tasks-done-percent');
-      let tasksDone = 0;
-      
-      for (let task of tasks) {
-        if (task.done) {
-          tasksDone++;
-        }
-      }
-      
-      const percentDone = Math.floor(tasksDone / tasks.length * 100);
-      tasksDonePercent.style.width = percentDone + '%';
-    }
-    
-    function findElementIndexInTasks(taskContainer) {
-      const taskDate = taskContainer.querySelector('.todo-created-at').textContent;
-      
-      for (let i = 0; i < tasks.length; i++) {
-        if (tasks[i].date === taskDate) {
-          return i;
-        }
-      }
-    }
-    
-    function updateCounter(toDoList) {
-      const counter = document.querySelector('#counter');
-      counter.textContent = toDoList.length;
-    }
-    
-    function sortByPriority() {
-      const tasksSorted = tasks.sort((a, b) => {
-        return b.priority - a.priority;
-      });
-      
-      const unsortedTasks = document.querySelectorAll('.todo-container');
-      
-      for (let unsortedTask of unsortedTasks) {
-        unsortedTask.parentNode.removeChild(unsortedTask);
-      }
-      displayToDoList(tasksSorted);
-    }

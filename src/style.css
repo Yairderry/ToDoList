@@ -18,10 +18,6 @@ main {
   justify-content: space-between;
 }
 
-#view-section {
-  width: 70%;
-}
-
 #tasks-done-container {
   display: flex;
   justify-content: center;
@@ -48,16 +44,56 @@ main {
 
 #tasks-done-bar {
   width: 300px;
-  height: 35px;
+  height: 25px;
+  border-radius: 15px;
+  overflow: hidden;
   background-color: red;
 }
 
 #tasks-done-percent {
   width: 0%;
-  height: 35px;
+  height: 25px;
   background-color: green;
 }
 
 .highlight {
   background-color: yellow;
+}
+
+label {
+  display: block;
+}
+
+#task-form {
+  border: 1px solid black;
+  border-radius: 3px;
+  display: flex;
+  padding: 10px;
+  margin: 15px;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+}
+
+#control-section input, select {
+  margin: 5px;
+  border: none;
+  outline: none;
+  border-bottom: 1px solid black;
+  background-color: transparent;
+}
+
+#add-button {
+  align-self: flex-end;
+}
+
+#view-section {
+  margin-top: 15px;
+  padding: 10px;
+  width: 90%;
+}
+
+.todo-container {
+  padding: 5px;
+  margin: 5px;
 }

@@ -24,18 +24,26 @@
             <div id="tasks-done-percent"></div>
           </div>
         </div>
-  
-        <input type="text" id="text-input">
-        <select name="" id="priority-selector">
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="5">5</option>
-        </select>
-        <button id="add-button">add</button>
+        <div id="task-form">
+          <div>
+            <label for="text-input">Task:</label>
+            <input type="text" id="text-input" placeholder="Enter new task">
+          </div>
+          <div>
+            <label for="priority-selector">Priority:</label>
+            <select name="" id="priority-selector">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </div>
+          <button id="add-button">add</button>
+        </div>
         <button id="sort-button">sort</button>
-        <input type="text" id="search-input">
+        <button id="undo-button">undo</button>
+        <input type="text" id="search-input" placeholder="Search text">
         <button id="search-button">search</button>
       </section>
   
