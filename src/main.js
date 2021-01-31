@@ -23,12 +23,37 @@ async function start() {
   document.addEventListener('click', saveEdits);
   document.addEventListener('click', searchText);
   document.addEventListener('click', undo);
+  document.addEventListener('click', sortByAlphabeticalOrder);
+  document.addEventListener('click', sortByDate);
   document.addEventListener("keyup", addWithEnter);
   displayToDoList(tasks);
 }
 start();
 
 // handlers
+
+function sortByDate(event) {
+  if (event.target.id !== 'sort-by-date') return;
+  
+  const tasksSorted = tasks.sort((a, b) => {
+    return new Date(b.date) - new Date(a.date);
+  });
+  
+  clearViewSection();
+  displayToDoList(tasksSorted);
+}
+
+function sortByAlphabeticalOrder(event) {
+  if (event.target.id !== 'sort-by-text') return;
+  
+  const tasksSorted = tasks.sort((a, b) => {
+    return a.text.localeCompare(b.text);
+  });
+  
+  clearViewSection();
+  displayToDoList(tasksSorted);
+}
+
 function undo(event) {
   const target = event.target;
 

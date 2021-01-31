@@ -15,12 +15,11 @@
       <section id="control-section">
         <h1>ToDo List</h1>
         <p>You've got <span id="counter">0</span> Task(s)</p>
-  
-        <div id="tasks-done-container">
-          <div id="tasks-done-bar">
-            <div id="tasks-done-percent"></div>
-          </div>
+
+        <div id="tasks-done-bar">
+          <div id="tasks-done-percent"></div>
         </div>
+
         <div id="task-form">
           <div>
             <label for="text-input">Task:</label>
@@ -38,6 +37,7 @@
           </div>
           <button id="add-button">add</button>
         </div>
+
         <div id="control-buttons">
           <button id="undo-button">undo</button>
           <div id="search-bar">
@@ -45,9 +45,14 @@
             <button id="search-button"></button>
           </div>
         </div>
-        <button id="sort-button">sort</button>
+
+        <div id="sorting-bar">
+          <button id="sort-button">Priority</button>
+          <button id="sort-by-date">Created At</button>
+          <button id="sort-by-text">Task</button>
+          <button id="save-order-button">Save Order</button>
+        </div>
       </section>
-  
       <section id="view-section"></section>
     </main>
 
