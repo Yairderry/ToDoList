@@ -88,6 +88,7 @@ h1 {
 }
 
 #control-section input, select {
+  font-family: 'Ubuntu', sans-serif;
   margin: 5px;
   border: none;
   outline: none;
@@ -193,6 +194,7 @@ h1 {
 #search-button,
 #add-button,
 #undo-button {
+  font-family: 'Ubuntu', sans-serif;
   display: inline-block;
   text-align: center;
   vertical-align: middle;
@@ -242,6 +244,7 @@ h1 {
 }
 
 #search-bar input {
+  font-family: 'Ubuntu', sans-serif;
   background: linear-gradient(to left top, rgb(255, 255, 255, 0.8),  rgb(255, 255, 255, 0.6));
   border: none;
   width: 60px;
@@ -262,6 +265,7 @@ h1 {
 #sort-by-date,
 #sort-by-text,
 #save-order-button {
+  font-family: 'Ubuntu', sans-serif;
   display: inline-block;
   text-align: center;
   vertical-align: middle;
@@ -322,19 +326,35 @@ h1 {
 }
 
 .todo-container {
+  background: linear-gradient(to left top, rgb(255, 255, 255, 1),  rgb(255, 255, 255, 0.8));
+  border-radius: 5px;
+  padding: 5px;
+  margin: 5px 0px;
+  box-shadow: 3px 4px 16px -3px rgba(80,80,80,1);
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
-
-.todo-container:active {
-  box-shadow: 10px 10px 10px 5px rgba(0,0,0,0.7);
 }
 
 .todo-text, .todo-created-at {
   flex: 1;
   min-width: 40%;
   word-wrap: break-word;
+}
+
+.edit-box {
+  font-family: 'Ubuntu', sans-serif;
+  border: none;
+  outline: none;
+  border-bottom: 1px solid rgba(32, 97, 86, 0.9);
+  background-color: transparent;
+  width: fit-content;
+  text-align: center;
+  font-size: 15px;
+}
+
+.todo-priority .edit-box {
+  max-width: 35px;
 }
 
 .extra-buttons {
@@ -350,17 +370,6 @@ h1 {
 #tasks-done-bar {
   display: flex;
   box-shadow: 4px 3px 5px -3px rgba(0,0,0,0.7);
-}
-
-#legend {
-  margin: 0px 20px;
-}
-
-#legend p {
-  margin: 0px;
-  padding: 0px;
-  font-size: 12px;
-  color: rgba(0, 0, 0, 1);
 }
 
 .done {
@@ -402,12 +411,21 @@ label {
   min-height: 50vh;
 }
 
-.todo-container {
-  background: linear-gradient(to left top, rgb(255, 255, 255, 1),  rgb(255, 255, 255, 0.8));
-  border-radius: 5px;
-  padding: 5px;
-  margin: 5px 0px;
-  box-shadow: 3px 4px 16px -3px rgba(80,80,80,1);
+.loader {
+  border: 16px solid transparent;
+  border-radius: 50%;
+  border-top: 16px solid #ffffff;
+  width: 120px;
+  height: 120px;
+  -webkit-animation: spin 2s linear infinite; /* Safari */
+  animation: spin 2s linear infinite;
+  align-self: center;
+  margin-top: 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 @media(max-width:900px) {

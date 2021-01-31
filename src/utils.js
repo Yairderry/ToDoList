@@ -11,8 +11,11 @@ async function getPersistent(key) {
     }
   };
   const request = new Request(URL, init);
+  const viewSection = document.querySelector('#view-section');
+  viewSection.innerHTML = `<div class="loader"></div>`;
   let data = await fetch(request);
   data = await data.json();
+  viewSection.innerHTML = '';
   return data.record[key];
 }
 
