@@ -315,11 +315,20 @@ h1 {
 }
 
 /* view-control */
+.placeholder {
+  background-color: rgba(0,0,0,0.7);
+  border-radius: 5px;
+  margin: 5px 0px;
+}
 
 .todo-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.todo-container:active {
+  box-shadow: 10px 10px 10px 5px rgba(0,0,0,0.7);
 }
 
 .todo-text, .todo-created-at {

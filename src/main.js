@@ -4,6 +4,12 @@ let tasksSorted;
 let counts;
 let addButton;
 let sortButton;
+let draggingTask;
+let placeholder;
+let isDraggingStarted = false;
+let x = 0;
+let y = 0;
+
 async function start() {
   tasks = await getPersistent(DB_NAME);
 
@@ -33,6 +39,60 @@ async function start() {
 start();
 
 // handlers
+function startDraggingTask(event) {
+  
+  draggingTask = findToDoContainer(
+    event.target,
+    event.target.parentElement,
+    event.target.parentElement.parentElement);
+    
+  if (draggingTask === null) return;
+  
+  const rect = draggingTask.getBoundingClientRect();
+  x = event.pageX - rect.left;
+  y = event.pageY - rect.top;
+
+  document.addEventListener('mousemove', movingTask);
+  document.addEventListener('mouseup', releasingTask);
+  
+  event.preventDefault();
+}
+
+function movingTask(event) {
+  const draggingRect = draggingTask.getBoundingClientRect();
+
+  if (!isDraggingStarted) {
+    isDraggingStarted = true;
+    placeholder = document.createElement('div');
+    placeholder.className = 'placeholder';
+    draggingTask.parentNode.insertBefore(
+      placeholder,
+      draggingTask.nextSibling
+    );
+
+    placeholder.style.height = `${draggingRect.height}px`;
+  }
+
+  draggingTask.style.position = 'absolute';
+  draggingTask.style.top = `${event.pageY - y}px`; 
+  draggingTask.style.left = `${event.pageX - x}px`;
+}
+
+function releasingTask(event) {
+  placeholder && placeholder.parentNode.removeChild(placeholder);
+  isDraggingStarted = false;
+
+  draggingTask.style.removeProperty('top');
+  draggingTask.style.removeProperty('left');
+  draggingTask.style.removeProperty('position');
+  
+  x = null;
+  y = null;
+  draggingTask = null;
+
+  document.removeEventListener('mousemove', movingTask);
+  document.removeEventListener('mouseup', releasingTask);
+}
 
 function saveListOrder(event) {
   if (event.target.id !== 'save-order-button') return;
@@ -65,7 +125,7 @@ function sortByAlphabeticalOrder(event) {
 
 function undo(event) {
   const target = event.target;
-
+  
   if (target.id !== 'undo-button') return;
 
   tasks = JSON.parse(localStorage.getItem(DB_NAME));
@@ -76,19 +136,19 @@ function undo(event) {
 
 function searchText(event) {
   const target = event.target;
-
+  
   if (target.id !== 'search-button') return;
-
+  
   const searchInput = document.querySelector('#search-input');
   highlight(searchInput.value);
-
+  
   searchInput.value = '';
   searchInput.focus();
 }
 
 function highlight(text) {
   const taskTexts = document.querySelectorAll('.todo-text');
-
+  
   for (let taskText of taskTexts) {
     const taskInnerHTML = taskText.textContent;
     
@@ -96,30 +156,30 @@ function highlight(text) {
       taskText.innerHTML = taskText.textContent;
       continue;
     }
-
+    
     // get all occurrences of a search text in the task
     let textIndexes = [];
     let index = taskInnerHTML.indexOf(text, 0);
-
+    
     while (index >= 0) {
       textIndexes.push(index);
       index = taskInnerHTML.indexOf(text, index + 1)
     }
-
+    
     const numberOfOccurrences = textIndexes.length;
     
     if (numberOfOccurrences === 0) {
       taskText.innerHTML = taskText.textContent;
       continue;
     }
-
+    
     let newInnerHTML = `${taskInnerHTML.substring(0,textIndexes[0])}`;
-
+    
     for (let i = 0; i < numberOfOccurrences; i++) {
       
       newInnerHTML = newInnerHTML + `<span class='highlight'>${text}</span>${taskInnerHTML.substring(textIndexes[i] + text.length, textIndexes[i + 1])}`
     }
-
+    
     taskText.innerHTML = newInnerHTML;
   }
 }
@@ -194,24 +254,24 @@ function saveEdits(event) {
   
   if (target.classList[0] !== 'save-button') return;
   localStorage.setItem(DB_NAME, JSON.stringify(tasks));
-
+  
   const taskContainer = event.target.parentElement.parentElement;
   const editBoxes = taskContainer.querySelectorAll('.edit-box');
   const toDoPriority = editBoxes[0].parentElement;
   const toDoText = editBoxes[1].parentElement;
-
+  
   toDoText.textContent = editBoxes[1].value;
   toDoPriority.textContent = editBoxes[0].value;
-
+  
   const editButton = document.createElement('button');
   editButton.className = 'edit-button';
-
+  
   // remove save button and add edit button
   const saveButton = taskContainer.querySelector('.save-button');
   const extraButtonsContainer = saveButton.parentElement;
   extraButtonsContainer.append(editButton);
   extraButtonsContainer.removeChild(saveButton);
-
+  
   // save changes in database
   const taskIndex = findElementIndexInTasks(taskContainer);
   tasks[taskIndex].priority = editBoxes[0].value;
@@ -222,7 +282,7 @@ function saveEdits(event) {
 function addToDoContainer() {
   const input = document.querySelector('#text-input');
   const priority = document.getElementById('priority-selector');
-
+  
   if (input.value === '') return;
   
   const task = createTaskObject(input, priority);
@@ -245,23 +305,23 @@ function createEditBoxes(toDoContainer) {
 
   editBoxText.value = taskText.textContent;
   editBoxPriority.value = taskPriority.textContent;
-
+  
   editBoxPriority.type = 'number';
   editBoxPriority.max = 5;
   editBoxPriority.min = 1;
-
+  
   editBoxText.className = 'edit-box';
   editBoxPriority.className = 'edit-box';
-
+  
   taskText.textContent = '';
   taskPriority.textContent = '';
-
+  
   taskPriority.append(editBoxPriority);
   taskText.append(editBoxText);
-
+  
   const saveButton = document.createElement('button');
   saveButton.className = 'save-button';
-
+  
   // remove edit button and add save button
   const editButton = toDoContainer.querySelector('.edit-button');
   const extraButtonsContainer = editButton.parentElement;
@@ -279,13 +339,13 @@ function createToDoPriority(priority) {
 
 function createToDoText(input, done) {
   const toDoText = document.createElement('div');
-
+  
   if (done) {
     toDoText.className = 'todo-text done';
   } else {
     toDoText.className = 'todo-text';
   }
-
+  
   toDoText.textContent = input;
   return toDoText;
 }
@@ -310,13 +370,15 @@ function createToDoContainer(task) {
     createToDoText(task['text'], task['done']),
     createExtraButtons(task['done']));
     viewSection.appendChild(toDoContainer);
+    
+    toDoContainer.addEventListener('mousedown', startDraggingTask);
   }
   
-function createTaskObject(input, priority) {
-  localStorage.setItem(DB_NAME, JSON.stringify(tasks));
-  const task = {
-    "text": input.value,
-    "priority": priority.value,
+  function createTaskObject(input, priority) {
+    localStorage.setItem(DB_NAME, JSON.stringify(tasks));
+    const task = {
+      "text": input.value,
+      "priority": priority.value,
     "date": new Date().toISOString().slice(0, 19).replace('T', ' '),
     "done": false
   }
@@ -330,7 +392,7 @@ function createExtraButtons(done) {
   const editButton = document.createElement('button');
   const doneButton = document.createElement('button');
   const buttonsContainer = document.createElement('div');
-
+  
   buttonsContainer.className = 'extra-buttons';
   
   if(done) {
@@ -347,9 +409,9 @@ function createExtraButtons(done) {
     deleteButton,
     editButton)
     return buttonsContainer;
-}
+  }
   
-// helper functions
+  // helper functions
 function displayToDoList(toDoList) {
   
   for (let task of toDoList) {
@@ -405,5 +467,14 @@ function clearViewSection() {
     task.parentNode.removeChild(task);
   }
 }
-
-    
+function findToDoContainer(elem1, elem2, elem3) {
+  if (elem1.className === 'todo-container') {
+    return elem1;
+  } else if (elem2.className === 'todo-container') {
+    return elem2;
+  } else if (elem3.className === 'todo-container') {
+    return elem3;
+  } else {
+    return null;
+  }
+}
