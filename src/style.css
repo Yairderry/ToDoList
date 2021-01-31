@@ -16,7 +16,7 @@ main {
   align-items: center;
   background-color: white;
   width: 70%;
-  height: 100%;
+  height: fit-content;
   border-radius: 15px;
   background: linear-gradient(to left bottom, rgb(255, 255, 255, 0.7),  rgb(255, 255, 255, 0.3));
   z-index: 3;
@@ -69,6 +69,7 @@ h1 {
 
 #task-form {
   background: linear-gradient(to left top, rgb(255, 255, 255, 0.8),  rgb(255, 255, 255, 0.4));
+  box-shadow: 3px 3px 10px -3px rgba(0,0,0,0.7);
   border-radius: 3px;
   padding: 10px;
   margin: 10px;
@@ -87,6 +88,7 @@ h1 {
 }
 
 /* buttons */
+
 .undone-button,
 .done-button,
 .edit-button,
@@ -179,16 +181,14 @@ h1 {
 
 #search-button:hover,
 #add-button:hover,
-#undo-button:hover,
-#search-button:focus,
-#add-button:focus,
-#undo-button:focus {
-  text-decoration: none;
+#undo-button:hover {
+  background: linear-gradient(to right top, rgba(84, 173, 173, 1),  rgba(77, 180, 132, 1));
 }
 
 #search-button:active,
 #add-button:active,
 #undo-button:active {
+  background: linear-gradient(to right top, rgb(75, 141, 141),  rgb(68, 141, 107));
   box-shadow: none;
 }
 
@@ -220,6 +220,7 @@ h1 {
   width: 60px;
   margin: 0%;
   padding: 0%;
+  padding-left: 10px;
 }
 
 #search-bar {
@@ -238,6 +239,23 @@ h1 {
 .todo-container {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+}
+
+.todo-text, .todo-created-at {
+  flex: 1;
+  min-width: 40%;
+  word-wrap: break-word;
+}
+
+.extra-buttons {
+  display: flex;
+  flex-direction: row;
+  min-width: 7%;
+}
+
+.todo-priority {
+  min-width: 5%;
 }
 
 #tasks-done-container {
@@ -300,4 +318,28 @@ label {
   padding: 5px;
   margin: 5px 0px;
   box-shadow: 3px 4px 16px -3px rgba(80,80,80,1);
+}
+
+@media(max-width:1025px) {
+  main {
+    width: 95%;
+    margin-top: 2.5%;
+  }
+
+  #control-section {
+    width: 100%;
+  }
+
+  #view-section {
+    width: 95%;
+    padding: 0%;
+  }
+
+  #control-buttons {
+    width: 95%;
+  }
+
+  .extra-buttons {
+    flex-direction: column;
+  }
 }

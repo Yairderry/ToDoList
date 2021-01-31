@@ -22,7 +22,6 @@ async function start() {
   document.addEventListener('click', editTask);
   document.addEventListener('click', saveEdits);
   document.addEventListener('click', searchText);
-  document.addEventListener('click', clearSearchText);
   document.addEventListener('click', undo);
   document.addEventListener("keyup", addWithEnter);
   displayToDoList(tasks);
@@ -39,12 +38,6 @@ function undo(event) {
   clearViewSection();
   displayToDoList(tasks);
   setPersistent(DB_NAME, tasks);
-}
-
-function clearSearchText(event) {
-  if (event.target.id === 'search-button') return;
-  
-  document.querySelector('#search-button').click();
 }
 
 function searchText(event) {
@@ -303,6 +296,8 @@ function createExtraButtons(done) {
   const editButton = document.createElement('button');
   const doneButton = document.createElement('button');
   const buttonsContainer = document.createElement('div');
+
+  buttonsContainer.className = 'extra-buttons';
   
   if(done) {
     doneButton.className = 'undone-button';
