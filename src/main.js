@@ -4,11 +4,7 @@ let tasksSorted;
 let counts;
 let addButton;
 let sortButton;
-let draggingTask;
-let placeholder;
-let isDraggingStarted = false;
-let x = 0;
-let y = 0;
+let viewSection;
 
 async function start() {
   tasks = await getPersistent(DB_NAME);
@@ -21,10 +17,12 @@ async function start() {
   
   addButton = document.querySelector('#add-button');
   sortButton = document.querySelector('#sort-button');
+  viewSection = document.querySelector('#view-section');
   
+  viewSection.addEventListener('dragover', draggingATask);
   addButton.addEventListener('click', addToDoContainer);
   sortButton.addEventListener('click', sortByPriority);
-  document.addEventListener('transitionend', deleteTask);
+  document.addEventListener('animationend', deleteTask);
   document.addEventListener('click', startTransition);
   document.addEventListener('click', markTaskDone);
   document.addEventListener('click', editTask);
@@ -40,91 +38,44 @@ async function start() {
 start();
 
 // handlers
+
+function draggingATask(event) {
+  event.preventDefault();
+  const toDoContainer = document.querySelector('.dragging');
+
+  const afterElement = getDragAfterElement(viewSection, event.clientY);
+
+  if (afterElement === undefined) {
+    viewSection.appendChild(toDoContainer);
+  } else {
+    viewSection.insertBefore(toDoContainer, afterElement);
+  }
+}
+
+function getDragAfterElement(container, y) {
+  // turn draggableElements into a list
+  const draggableElements = [...container.querySelectorAll('.todo-container:not(.dragging)')];
+
+  // find out the element the draggable is above
+  return draggableElements.reduce((closest, child) => {
+    const box = child.getBoundingClientRect();
+    const offset = y - box.top - box.height / 2;
+
+    if (offset < 0 && offset > closest.offset) {
+      return { offset: offset, element: child };
+    } else {
+      return closest;
+    }
+  }, { offset: Number.NEGATIVE_INFINITY }).element;
+}
+
 function startTransition(event) {
   const target = event.target;
   
   if (target.className !== 'delete-button') return;
   
   const toDoContainer = target.parentElement.parentElement;
-  toDoContainer.classList.add('deleted');
-}
-
-function startDraggingTask(event) {
-  
-  draggingTask = findToDoContainer(
-    event.target,
-    event.target.parentElement,
-    event.target.parentElement.parentElement);
-    
-  if (draggingTask === null) return;
-
-  const rect = draggingTask.getBoundingClientRect();
-  console.log(rect.top, event.clientY);
-  
-  x = event.pageX - rect.left;
-  y = event.pageY - rect.top;
-
-  document.addEventListener('mousemove', movingTask);
-  document.addEventListener('mouseup', releasingTask);
-
-  event.preventDefault();
-}
-
-function movingTask(event) {
-  const draggingRect = draggingTask.getBoundingClientRect();
-
-  if (!isDraggingStarted) {
-    placeholder = document.createElement('div');
-    isDraggingStarted = true;
-    placeholder.className = 'placeholder';
-    draggingTask.parentNode.insertBefore(
-      placeholder,
-      draggingTask.nextSibling
-    );
-
-    placeholder.style.height = `${draggingRect.height}px`;
-  }
-
-  draggingTask.style.width = '95%';
-  draggingTask.style.boxShadow = '10px 10px 10px 5px rgba(0,0,0,0.7)';
-
-  const prevEle = draggingTask.previousElementSibling;
-  const nextEle = placeholder.nextElementSibling;
-
-  const shiftX = (document.body.getBoundingClientRect().width - document.querySelector('main').getBoundingClientRect().width) / 2;
-
-  draggingTask.style.position = 'absolute';
-  draggingTask.style.top = `${event.pageY - y}px`; 
-  draggingTask.style.left = `${event.pageX - x - shiftX}px`;
-  console.log(draggingRect.top, event.clientY);
-
-  if (prevEle && isAbove(draggingTask, prevEle)) {
-    swap(placeholder, draggingTask);
-    swap(placeholder, prevEle);
-  } else if (nextEle && isAbove(nextEle, draggingTask)) {
-    swap(nextEle, placeholder);
-    swap(nextEle, draggingTask);
-  }
-}
-
-function releasingTask(event) {
-  if (isDraggingStarted) {
-    placeholder.parentNode.removeChild(placeholder);
-  }
-  isDraggingStarted = false;
-  
-  draggingTask.style.removeProperty('top');
-  draggingTask.style.removeProperty('left');
-  draggingTask.style.removeProperty('position');
-  draggingTask.style.removeProperty('width');
-  draggingTask.style.removeProperty('box-shadow');
-  
-  x = null;
-  y = null;
-  draggingTask = null;
-
-  document.removeEventListener('mousemove', movingTask);
-  document.removeEventListener('mouseup', releasingTask);
+  toDoContainer.style.animation = 'leave 1s';
 }
 
 function saveListOrder(event) {
@@ -390,9 +341,15 @@ function createToDoCreatedAt(date) {
 
 function createToDoContainer(task) {
   const toDoContainer = document.createElement('div');
-  const viewSection = document.querySelector('#view-section');
   
   toDoContainer.className = 'todo-container';
+  toDoContainer.draggable = true;
+  toDoContainer.addEventListener('dragstart', () => {
+    toDoContainer.classList.add('dragging');
+  });
+  toDoContainer.addEventListener('dragend', () => {
+    toDoContainer.classList.remove('dragging');
+  });
   
   toDoContainer.append(
     createToDoPriority(task['priority']),
@@ -400,9 +357,7 @@ function createToDoContainer(task) {
     createToDoText(task['text'], task['done']),
     createExtraButtons(task['done']));
     viewSection.appendChild(toDoContainer);
-    
-    toDoContainer.addEventListener('mousedown', startDraggingTask);
-  }
+}
   
   function createTaskObject(input, priority) {
     localStorage.setItem(DB_NAME, JSON.stringify(tasks));
@@ -496,40 +451,4 @@ function clearViewSection() {
   for (let task of allTasks) {
     task.parentNode.removeChild(task);
   }
-}
-
-function findToDoContainer(elem1, elem2, elem3) {
-  const possibleElements = [elem1, elem2, elem3];
-  
-  for (let elem of possibleElements) {
-    if (elem.className === 'edit-box' || elem.className === 'extra-buttons') {
-      return null;
-    }
-  }
-
-  if (elem1.className === 'todo-container') {
-    return elem1;
-  } else if (elem2.className === 'todo-container') {
-    return elem2;
-  } else if (elem3.className === 'todo-container') {
-    return elem3;
-  } else {
-    return null;
-  }
-}
-
-function isAbove(nodeA, nodeB) {
-  const rectA = nodeA.getBoundingClientRect();
-  const rectB = nodeB.getBoundingClientRect();
-
-  return (rectA.top + rectA.height / 2 < rectB.top + rectB.height / 2);
-}
-
-function swap(nodeA, nodeB) {
-  const parentA = nodeA.parentNode;
-  const siblingA = nodeA.nextSibling === nodeB ? nodeA : nodeA.nextSibling;
-
-  nodeB.parentNode.insertBefore(nodeA, nodeB);
-
-  parentA.insertBefore(nodeB, siblingA);
 }

@@ -334,7 +334,6 @@ h1 {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  transition: transform 1.5s 0s, opacity 1.25s 0s;
   transform: translateX(0);
   opacity: 1;
 }
@@ -411,7 +410,7 @@ label {
   width: 90%;
   display: flex;
   flex-direction: column;
-  min-height: 50vh;
+  min-height: 35vh;
 }
 
 .loader {
@@ -420,7 +419,6 @@ label {
   border-top: 16px solid #ffffff;
   width: 120px;
   height: 120px;
-  -webkit-animation: spin 2s linear infinite; /* Safari */
   animation: spin 2s linear infinite;
   align-self: center;
   margin-top: 20px;
@@ -431,9 +429,17 @@ label {
   100% { transform: rotate(360deg); }
 }
 
-.deleted {
-  transform: translateX(100vw);
+@keyframes leave {
+  100% { transform: translateX(100vw); }
+}
+/* .deleted {
+  
   opacity: 0;
+} */
+
+.todo-container.dragging {
+  transition: none;
+  opacity: 0.5;
 }
 
 @media(max-width:900px) {
