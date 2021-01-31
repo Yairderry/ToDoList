@@ -36,7 +36,7 @@ start();
 
 function saveListOrder(event) {
   if (event.target.id !== 'save-order-button') return;
-  
+  if (tasksSorted === undefined) return;
   tasks = tasksSorted;
   setPersistent(DB_NAME, tasks);
 }
