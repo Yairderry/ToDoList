@@ -87,39 +87,53 @@ h1 {
 }
 
 /* buttons */
+.undone-button,
+.done-button,
 .edit-button,
 .delete-button,
 .save-button {
-/* .done-button, */
-/* .undone-button */
   display: inline-block;
   padding: 2px;
   margin: 0%;
   border: none;
   background: #ffffff;
-
+  outline: none;
 }
 
+.undone-button:hover,
+.done-button:hover,
 .edit-button:hover,
 .delete-button:hover,
-.save-button:hover,
-/* .done-button:hover, */
-/* .undone-button:hover, */
-.edit-button:focus,
-/* .undone-button:focus, */
-.delete-button:focus,
-/* .done-button:focus,  */
-.save-button:focus {
-  color: #ffffff;
+.save-button:hover { 
+  background-color: rgb(199, 199, 199);
+  outline: none;
 }
 
-/* .done-button:active, */
+.undone-button:active,
+.done-button:active,
 .edit-button:active,
 .save-button:active,
-/* .undone-button:active,  */
 .delete-button:active {
-  background: #999999;
+  background: rgb(145, 145, 145);
   outline: none;
+}
+
+.undone-button:before {
+  background: url(./icons/undone-icon.png) no-repeat left center transparent;
+  content:  "";
+  display: inline-block;
+  height: 12px;
+  width: 12px;
+  background-size: 100% 100%;
+}
+
+.done-button:before {
+  background: url(./icons/done-icon.png) no-repeat left center transparent;
+  content:  "";
+  display: inline-block;
+  height: 12px;
+  width: 12px;
+  background-size: 100% 100%;
 }
 
 .edit-button:before {
@@ -140,24 +154,6 @@ h1 {
   background-size: 100% 100%;
 }
 
-/* .undone-button:before {
-  background: url(./icons/done-icon.png) no-repeat left center transparent;
-  content:  "";
-  display: inline-block;
-  height: 12px;
-  width: 12px;
-  background-size: 100% 100%;
-} */
-
-/* .done-button:before {
-  background: url(./icons/undone-icon.png) no-repeat left center transparent;
-  content:  "";
-  display: inline-block;
-  height: 12px;
-  width: 12px;
-  background-size: 100% 100%;
-} */
-
 .save-button:before {
   background: url(./icons/save-icon.png) no-repeat left center transparent;
   content:  "";
@@ -165,6 +161,78 @@ h1 {
   height: 12px;
   width: 12px;
   background-size: 100% 100%;
+}
+
+#search-button,
+#add-button,
+#undo-button {
+  display: inline-block;
+  text-align: center;
+  vertical-align: middle;
+  padding: 4px 5px;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(to right top, rgba(84, 173, 173, 0.8),  rgba(77, 180, 132, 0.5));
+  box-shadow: 4px 3px 5px -3px rgba(0,0,0,0.7);
+  outline: none;
+}
+
+#search-button:hover,
+#add-button:hover,
+#undo-button:hover,
+#search-button:focus,
+#add-button:focus,
+#undo-button:focus {
+  text-decoration: none;
+}
+
+#search-button:active,
+#add-button:active,
+#undo-button:active {
+  box-shadow: none;
+}
+
+#undo-button:before {
+  content:  "";
+  display: inline-block;
+  background: url(./icons/undo-icon.png) no-repeat left center transparent;
+  background-size: 100% 100%;
+}
+
+#search-button {
+  border-radius: 0px;
+  padding: 4px;
+  box-shadow: none;
+}
+
+#search-button:before {
+  background: url(./icons/search-icon.png) no-repeat left center transparent;
+  content:  "";
+  display: inline-block;
+  height: 12px;
+  width: 12px;
+  background-size: 100% 100%;
+}
+
+#search-bar input {
+  background: linear-gradient(to left top, rgb(255, 255, 255, 0.8),  rgb(255, 255, 255, 0.6));
+  border: none;
+  width: 60px;
+  margin: 0%;
+  padding: 0%;
+}
+
+#search-bar {
+  display: flex;
+  width: fit-content;
+  overflow: hidden;
+  border-radius: 10px;
+  box-shadow: 4px 3px 5px -3px rgba(0,0,0,0.7);
+}
+
+#control-buttons {
+  display: flex;
+  justify-content: space-between;
 }
 
 .todo-container {

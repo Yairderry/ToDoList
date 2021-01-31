@@ -22,6 +22,7 @@ async function start() {
   document.addEventListener('click', editTask);
   document.addEventListener('click', saveEdits);
   document.addEventListener('click', searchText);
+  document.addEventListener('click', clearSearchText);
   document.addEventListener('click', undo);
   document.addEventListener("keyup", addWithEnter);
   displayToDoList(tasks);
@@ -38,6 +39,12 @@ function undo(event) {
   clearViewSection();
   displayToDoList(tasks);
   setPersistent(DB_NAME, tasks);
+}
+
+function clearSearchText(event) {
+  if (event.target.id === 'search-button') return;
+  
+  document.querySelector('#search-button').click();
 }
 
 function searchText(event) {
@@ -122,7 +129,9 @@ function deleteTask(event) {
 function markTaskDone(event) {
   const target = event.target;
   
-  if (target.classList[0] !== 'done-button') return;
+  if (!(target.className === 'done-button' || target.className === 'undone-button')) {
+    return;
+  }
   localStorage.setItem(DB_NAME, JSON.stringify(tasks));
   
   const toDoContainer = target.parentElement.parentElement;
@@ -133,11 +142,10 @@ function markTaskDone(event) {
   setPersistent(DB_NAME, tasks);
   
   if (tasks[containerIndex].done) {
-    target.textContent = 'undone';
+    target.className = 'undone-button';
     toDoText.className = 'todo-text done';
-    console.log();
   } else {
-    target.textContent = 'done';
+    target.className = 'done-button';
     toDoText.className = 'todo-text';
   }
   
@@ -187,6 +195,8 @@ function saveEdits(event) {
 function addToDoContainer() {
   const input = document.querySelector('#text-input');
   const priority = document.getElementById('priority-selector');
+
+  if (input.value === '') return;
   
   const task = createTaskObject(input, priority);
   createToDoContainer(task);
@@ -295,14 +305,13 @@ function createExtraButtons(done) {
   const buttonsContainer = document.createElement('div');
   
   if(done) {
-    doneButton.textContent = 'undone';
+    doneButton.className = 'undone-button';
   } else {
-    doneButton.textContent = 'done';
+    doneButton.className = 'done-button';
   }
   
   deleteButton.className = 'delete-button';
   editButton.className = 'edit-button';
-  doneButton.className = 'done-button';
   
   buttonsContainer.append(
     doneButton,
