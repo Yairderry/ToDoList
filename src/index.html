@@ -4,6 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="./style.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@500&display=swap" rel="stylesheet">
     <title>My TODO List</title>
     <script src="./utils.js"></script>
   </head>
@@ -12,13 +14,9 @@
     <main>
       <section id="control-section">
         <h1>ToDo List</h1>
-        <p><span id="counter">0</span> Task(s)</p>
+        <p>You've got <span id="counter">0</span> Task(s)</p>
   
         <div id="tasks-done-container">
-          <div id="legend">
-            <p id="done">done</p>
-            <p id="undone">undone</p>
-          </div>
           <div id="tasks-done-bar">
             <div id="tasks-done-percent"></div>
           </div>
@@ -26,7 +24,7 @@
         <div id="task-form">
           <div>
             <label for="text-input">Task:</label>
-            <input type="text" id="text-input" placeholder="Enter new task">
+            <input type="text" id="text-input" placeholder="Enter new task" autocomplete="off">
           </div>
           <div>
             <label for="priority-selector">Priority:</label>

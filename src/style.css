@@ -8,7 +8,6 @@ html, body {
   justify-content: center;
   text-align: center;
   background: linear-gradient(to right top, rgb(84, 173, 173),  rgb(77, 180, 132));
-
 }
 
 main {
@@ -24,8 +23,11 @@ main {
   backdrop-filter: blur(0.5rem);
   box-shadow: 4px 3px 25px -3px rgba(0,0,0,0.4);
   margin-top: 20px;
+  color: rgba(32, 97, 86, 0.9);
+  font-family: 'Ubuntu', sans-serif;
 }
 
+/* background elements */
 .circle1, .circle2 {
   background-color: white;
   height: 130px;
@@ -47,6 +49,124 @@ main {
   left: 10%;
 }
 
+/* control section */
+
+h1 {
+  margin: 10px 0px 0px 0px;
+  font-size: 45px;
+  color: rgba(32, 97, 86, 0.9);
+}
+
+#control-section p {
+  margin: 0%;
+}
+
+#counter {
+  font-size: 45px;
+  font-weight: 700;
+  color: rgba(0, 0, 0, 0.9);
+}
+
+#task-form {
+  background: linear-gradient(to left top, rgb(255, 255, 255, 0.8),  rgb(255, 255, 255, 0.4));
+  border-radius: 3px;
+  padding: 10px;
+  margin: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+}
+
+#control-section input, select {
+  margin: 5px;
+  border: none;
+  outline: none;
+  border-bottom: 1px solid black;
+  background-color: transparent;
+}
+
+/* buttons */
+.edit-button,
+.delete-button,
+.save-button {
+/* .done-button, */
+/* .undone-button */
+  display: inline-block;
+  padding: 2px;
+  margin: 0%;
+  border: none;
+  background: #ffffff;
+
+}
+
+.edit-button:hover,
+.delete-button:hover,
+.save-button:hover,
+/* .done-button:hover, */
+/* .undone-button:hover, */
+.edit-button:focus,
+/* .undone-button:focus, */
+.delete-button:focus,
+/* .done-button:focus,  */
+.save-button:focus {
+  color: #ffffff;
+}
+
+/* .done-button:active, */
+.edit-button:active,
+.save-button:active,
+/* .undone-button:active,  */
+.delete-button:active {
+  background: #999999;
+  outline: none;
+}
+
+.edit-button:before {
+  background: url(./icons/edit-icon.png) no-repeat left center transparent;
+  content:  "";
+  display: inline-block;
+  height: 12px;
+  width: 12px;
+  background-size: 100% 100%;
+}
+
+.delete-button:before {
+  background: url(./icons/bin-icon.png) no-repeat left center transparent;
+  content:  "";
+  display: inline-block;
+  height: 12px;
+  width: 12px;
+  background-size: 100% 100%;
+}
+
+/* .undone-button:before {
+  background: url(./icons/done-icon.png) no-repeat left center transparent;
+  content:  "";
+  display: inline-block;
+  height: 12px;
+  width: 12px;
+  background-size: 100% 100%;
+} */
+
+/* .done-button:before {
+  background: url(./icons/undone-icon.png) no-repeat left center transparent;
+  content:  "";
+  display: inline-block;
+  height: 12px;
+  width: 12px;
+  background-size: 100% 100%;
+} */
+
+.save-button:before {
+  background: url(./icons/save-icon.png) no-repeat left center transparent;
+  content:  "";
+  display: inline-block;
+  height: 12px;
+  width: 12px;
+  background-size: 100% 100%;
+}
+
 .todo-container {
   display: flex;
   justify-content: space-between;
@@ -62,22 +182,14 @@ main {
 }
 
 #legend p {
-  margin: 2px 0px;
-  padding: 0px 2px;
+  margin: 0px;
+  padding: 0px;
   font-size: 12px;
-  color: aliceblue;
-}
-
-#done {
-  background-color: green;
+  color: rgba(0, 0, 0, 1);
 }
 
 .done {
   text-decoration: line-through;
-}
-
-#undone {
-  background-color: red;
 }
 
 #tasks-done-bar {
@@ -85,40 +197,21 @@ main {
   height: 20px;
   border-radius: 15px;
   overflow: hidden;
-  background-color: red;
+  background-color: rgb(32, 97, 86);
 }
 
 #tasks-done-percent {
   width: 0%;
   height: 25px;
-  background-color: green;
+  background-color: rgb(95, 206, 187);
 }
 
 .highlight {
-  background-color: yellow;
+  background-color: rgba(255, 255, 75, 0.849);
 }
 
 label {
   display: block;
-}
-
-#task-form {
-  border: 1px solid black;
-  border-radius: 3px;
-  display: flex;
-  padding: 10px;
-  margin: 15px;
-  flex-direction: column;
-  align-items: flex-start;
-  text-align: left;
-}
-
-#control-section input, select {
-  margin: 5px;
-  border: none;
-  outline: none;
-  border-bottom: 1px solid black;
-  background-color: transparent;
 }
 
 #add-button {
@@ -129,9 +222,14 @@ label {
   margin-top: 15px;
   padding: 10px;
   width: 90%;
+  display: flex;
+  flex-direction: column;
 }
 
 .todo-container {
+  background: linear-gradient(to left top, rgb(255, 255, 255, 1),  rgb(255, 255, 255, 0.8));
+  border-radius: 5px;
   padding: 5px;
-  margin: 5px;
+  margin: 5px 0px;
+  box-shadow: 3px 4px 16px -3px rgba(80,80,80,1);
 }

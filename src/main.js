@@ -169,7 +169,6 @@ function saveEdits(event) {
   toDoPriority.textContent = editBoxes[0].value;
 
   const editButton = document.createElement('button');
-  editButton.textContent = 'edit';
   editButton.className = 'edit-button';
 
   // remove save button and add edit button
@@ -224,7 +223,6 @@ function createEditBoxes(toDoContainer) {
   taskText.append(editBoxText);
 
   const saveButton = document.createElement('button');
-  saveButton.textContent = 'save';
   saveButton.className = 'save-button';
 
   // remove edit button and add save button
@@ -296,8 +294,6 @@ function createExtraButtons(done) {
   const doneButton = document.createElement('button');
   const buttonsContainer = document.createElement('div');
   
-  deleteButton.textContent = 'delete';
-  editButton.textContent = 'edit';
   if(done) {
     doneButton.textContent = 'undone';
   } else {
