@@ -24,7 +24,8 @@ async function start() {
   
   addButton.addEventListener('click', addToDoContainer);
   sortButton.addEventListener('click', sortByPriority);
-  document.addEventListener('click', deleteTask);
+  document.addEventListener('transitionend', deleteTask);
+  document.addEventListener('click', startTransition);
   document.addEventListener('click', markTaskDone);
   document.addEventListener('click', editTask);
   document.addEventListener('click', saveEdits);
@@ -39,6 +40,15 @@ async function start() {
 start();
 
 // handlers
+function startTransition(event) {
+  const target = event.target;
+  
+  if (target.className !== 'delete-button') return;
+  
+  const toDoContainer = target.parentElement.parentElement;
+  toDoContainer.classList.add('deleted');
+}
+
 function startDraggingTask(event) {
   
   draggingTask = findToDoContainer(
@@ -220,13 +230,10 @@ function addWithEnter(event) {
 
 function deleteTask(event) {
   const target = event.target;
+
+  const containerIndex = findElementIndexInTasks(target);
   
-  if (target.className !== 'delete-button') return;
-  
-  const toDoContainer = target.parentElement.parentElement;
-  const containerIndex = findElementIndexInTasks(toDoContainer);
-  
-  toDoContainer.parentNode.removeChild(toDoContainer);
+  target.parentNode.removeChild(target);
   
   localStorage.setItem(DB_NAME, JSON.stringify(tasks));
   tasks.splice(containerIndex, 1);

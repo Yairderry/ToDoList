@@ -334,6 +334,9 @@ h1 {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  transition: transform 1.5s 0s, opacity 1.25s 0s;
+  transform: translateX(0);
+  opacity: 1;
 }
 
 .todo-text, .todo-created-at {
@@ -426,6 +429,11 @@ label {
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+.deleted {
+  transform: translateX(100vw);
+  opacity: 0;
 }
 
 @media(max-width:900px) {
