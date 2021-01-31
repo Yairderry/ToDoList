@@ -1,6 +1,7 @@
 "use strict";
 let tasks;
-let counts
+let tasksSorted;
+let counts;
 let addButton;
 let sortButton;
 async function start() {
@@ -25,6 +26,7 @@ async function start() {
   document.addEventListener('click', undo);
   document.addEventListener('click', sortByAlphabeticalOrder);
   document.addEventListener('click', sortByDate);
+  document.addEventListener('click', saveListOrder);
   document.addEventListener("keyup", addWithEnter);
   displayToDoList(tasks);
 }
@@ -32,10 +34,17 @@ start();
 
 // handlers
 
+function saveListOrder(event) {
+  if (event.target.id !== 'save-order-button') return;
+  
+  tasks = tasksSorted;
+  setPersistent(DB_NAME, tasks);
+}
+
 function sortByDate(event) {
   if (event.target.id !== 'sort-by-date') return;
   
-  const tasksSorted = tasks.sort((a, b) => {
+  tasksSorted = tasks.sort((a, b) => {
     return new Date(b.date) - new Date(a.date);
   });
   
@@ -46,7 +55,7 @@ function sortByDate(event) {
 function sortByAlphabeticalOrder(event) {
   if (event.target.id !== 'sort-by-text') return;
   
-  const tasksSorted = tasks.sort((a, b) => {
+  tasksSorted = tasks.sort((a, b) => {
     return a.text.localeCompare(b.text);
   });
   
@@ -381,7 +390,7 @@ function updateCounter(toDoList) {
 }
 
 function sortByPriority() {
-  const tasksSorted = tasks.sort((a, b) => {
+  tasksSorted = tasks.sort((a, b) => {
     return b.priority - a.priority;
   });
   

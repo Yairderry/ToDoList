@@ -217,10 +217,12 @@ h1 {
   box-shadow: none;
 }
 
-#undo-button:before {
+#undo-button::before {
+  background: url(./icons/undo-icon.png) no-repeat left center transparent;
   content:  "";
   display: inline-block;
-  background: url(./icons/undo-icon.png) no-repeat left center transparent;
+  height: 12px;
+  width: 12px;
   background-size: 100% 100%;
 }
 
@@ -270,21 +272,43 @@ h1 {
   border-right: 1px solid white;
 }
 
+#save-order-button {
+  border: none;
+  background: linear-gradient(to right top, rgba(143, 169, 255, 0.7),  rgba(77, 147, 180, 0.9));
+}
+
+#save-order-button:hover {
+  background: linear-gradient(to right top, rgba(101, 120, 182, 0.7),  rgba(53, 102, 124, 0.9));
+}
+
+#save-order-button:active {
+  background: linear-gradient(to right top, rgba(101, 120, 182, 1),  rgba(53, 102, 124, 1));
+}
+
 #sort-button:hover,
 #sort-by-date:hover,
-#sort-by-text:hover,
-#save-order-button:hover {
+#sort-by-text:hover {
   background: linear-gradient(to right top, rgba(84, 173, 173, 1),  rgba(77, 180, 132, 1));
+
 }
 
 #sort-button:active,
 #sort-by-date:active,
-#sort-by-text:active,
-#save-order-button:active {
+#sort-by-text:active {
   background: linear-gradient(to right top, rgb(75, 141, 141),  rgb(68, 141, 107));
   box-shadow: none;
 }
 
+#sort-button::before,
+#sort-by-date::before,
+#sort-by-text::before {
+  background: url(./icons/top-to-bottom-icon.png) no-repeat left center transparent;
+  content:  "";
+  display: inline-block;
+  height: 12px;
+  width: 12px;
+  background-size: 100% 100%;
+}
 #sort-by-date,
 #sort-by-text {
   flex: 1;
