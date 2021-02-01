@@ -30,6 +30,7 @@ async function start() {
   document.addEventListener('click', saveEdits);
   document.addEventListener('click', searchText);
   document.addEventListener('click', undo);
+  document.addEventListener('click', clearAll);
   document.addEventListener('click', sortByAlphabeticalOrder);
   document.addEventListener('click', sortByDate);
   document.addEventListener('click', saveListOrder);
@@ -39,6 +40,19 @@ async function start() {
 start();
 
 // handlers
+function clearAll(event) {
+  const target = event.target;
+  
+  if (target.id !== 'clear-all-button') return;
+  
+  if (confirm('Are you sure you want to clear your ToDo list?')) {
+    clearViewSection();
+    localStorage.setItem(DB_NAME, JSON.stringify(tasks));
+    tasks = [];
+    setPersistent(DB_NAME, tasks);
+  } else return;
+}
+
 function getNewOrder(event) {
   const allTasks = viewSection.querySelectorAll('.todo-container');
   let newOrder = [];
@@ -70,7 +84,7 @@ function startTransition(event) {
   if (target.className !== 'delete-button') return;
   
   const toDoContainer = target.parentElement.parentElement;
-  toDoContainer.style.animation = 'leave 1s';
+  toDoContainer.style.animation = 'leave 0.5s';
 }
 
 function saveListOrder(event) {
@@ -116,7 +130,10 @@ function undo(event) {
 function searchText(event) {
   const target = event.target;
   
-  if (target.id !== 'search-button') return;
+  if (target.id !== 'search-button') {
+    highlight('');
+    return;
+  } 
   
   const searchInput = document.querySelector('#search-input');
   highlight(searchInput.value);
