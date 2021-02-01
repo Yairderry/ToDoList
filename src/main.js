@@ -34,7 +34,6 @@ async function start() {
   document.addEventListener('click', sortByAlphabeticalOrder);
   document.addEventListener('click', sortByDate);
   document.addEventListener('click', saveListOrder);
-  document.addEventListener("keyup", addWithEnter);
   displayToDoList(tasks);
 }
 start();
@@ -49,6 +48,7 @@ function clearAll(event) {
     clearViewSection();
     localStorage.setItem(DB_NAME, JSON.stringify(tasks));
     tasks = [];
+    updateCounter(tasks);
     setPersistent(DB_NAME, tasks);
   } else return;
 }
@@ -129,14 +129,11 @@ function undo(event) {
 
 function searchText(event) {
   const target = event.target;
-  
-  if (target.id !== 'search-button') {
-    highlight('');
-    return;
-  } 
+
+  if (target.id !== 'search-button') return;
   
   const searchInput = document.querySelector('#search-input');
-  highlight(searchInput.value);
+  highlight(searchInput.value.toLowerCase());
   
   searchInput.value = '';
   searchInput.focus();
@@ -177,17 +174,6 @@ function highlight(text) {
     }
     
     taskText.innerHTML = newInnerHTML;
-  }
-}
-
-function addWithEnter(event) {
-  if (event.key === "Enter") {
-    event.preventDefault();
-    const textInput = document.querySelector('#text-input').value;
-    
-    if (textInput !== '') {
-      document.querySelector('#add-button').click();
-    }
   }
 }
 
@@ -253,7 +239,7 @@ function saveEdits(event) {
   const toDoPriority = editBoxes[0].parentElement;
   const toDoText = editBoxes[1].parentElement;
   
-  toDoText.textContent = editBoxes[1].value;
+  toDoText.textContent = editBoxes[1].value.toLowerCase();
   toDoPriority.textContent = editBoxes[0].value;
   
   const editButton = document.createElement('button');
@@ -295,6 +281,9 @@ function createEditBoxes(toDoContainer) {
   
   const editBoxText = document.createElement('input');
   const editBoxPriority = document.createElement('input');
+
+  editBoxText.className = 'edit-box';
+  editBoxPriority.className = 'edit-box';
   
   editBoxText.value = taskText.textContent;
   editBoxPriority.value = taskPriority.textContent;
@@ -302,9 +291,6 @@ function createEditBoxes(toDoContainer) {
   editBoxPriority.type = 'number';
   editBoxPriority.max = 5;
   editBoxPriority.min = 1;
-  
-  editBoxText.className = 'edit-box';
-  editBoxPriority.className = 'edit-box';
   
   taskText.textContent = '';
   taskPriority.textContent = '';
@@ -339,7 +325,7 @@ function createToDoText(input, done) {
     toDoText.className = 'todo-text';
   }
   
-  toDoText.textContent = input;
+  toDoText.textContent = input.toLowerCase();
   return toDoText;
 }
 
@@ -435,9 +421,10 @@ function checkTasksDone() {
 
 function findElementIndexInTasks(taskContainer) {
   const taskDate = taskContainer.querySelector('.todo-created-at').textContent;
+  const taskDone = taskContainer.querySelector('.undone-button') !== null ? true : false;
   
   for (let i = 0; i < tasks.length; i++) {
-    if (tasks[i].date === taskDate) {
+    if (tasks[i].date === taskDate && tasks[i].done === taskDone) {
       return i;
     }
   }
