@@ -117,6 +117,21 @@ function undo(event) {
   setPersistent(DB_NAME, tasks);
 }
 
+function clearAll(event) {
+  const target = event.target;
+  
+  if (target.id !== 'clear-all-button') return;
+  
+  if (confirm('Are you sure you want to clear your ToDo list?')) {
+    viewSection.innerHTML = '';
+    
+    localStorage.setItem(DB_NAME, JSON.stringify(tasks));
+    tasks = [];
+    updateCounter(tasks);
+    setPersistent(DB_NAME, tasks);
+  } else return;
+}
+
 function searchText(event) {
   const target = event.target;
 
@@ -127,22 +142,16 @@ function searchText(event) {
   
   searchInput.value = '';
   searchInput.focus();
-}
+}  
 
 // sorting buttons handlers
-function clearAll(event) {
-  const target = event.target;
+function sortByPriority() {
+  tasksSorted = tasks.sort((a, b) => {
+    return b.priority - a.priority;
+  });
   
-  if (target.id !== 'clear-all-button') return;
-  
-  if (confirm('Are you sure you want to clear your ToDo list?')) {
-    viewSection.innerHTML = '';
-
-    localStorage.setItem(DB_NAME, JSON.stringify(tasks));
-    tasks = [];
-    updateCounter(tasks);
-    setPersistent(DB_NAME, tasks);
-  } else return;
+  viewSection.innerHTML = '';
+  displayToDoList(tasksSorted);
 }
 
 function saveListOrder(event) {
@@ -402,6 +411,7 @@ function displayToDoList(toDoList) {
 
 function checkTasksDone() {
   const tasksDonePercent = document.querySelector('#tasks-done-percent');
+  const percentInNumbers = document.querySelector('#tasks-done p');
   let tasksDone = 0;
   
   for (let task of tasks) {
@@ -412,6 +422,7 @@ function checkTasksDone() {
   
   const percentDone = Math.floor(tasksDone / tasks.length * 100);
   tasksDonePercent.style.width = percentDone + '%';
+  percentInNumbers.textContent = percentDone + '%';
 }
 
 function findElementIndexInTasks(taskContainer) {
@@ -428,15 +439,6 @@ function findElementIndexInTasks(taskContainer) {
 function updateCounter(toDoList) {
   const counter = document.querySelector('#counter');
   counter.textContent = toDoList.length;
-}
-
-function sortByPriority() {
-  tasksSorted = tasks.sort((a, b) => {
-    return b.priority - a.priority;
-  });
-  
-  viewSection.innerHTML = '';
-  displayToDoList(tasksSorted);
 }
 
 function getDragAfterElement(container, y) {
