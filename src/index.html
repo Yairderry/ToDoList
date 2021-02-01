@@ -35,23 +35,25 @@
               <option value="5">5</option>
             </select>
           </div>
-          <button id="add-button">add</button>
+          <button id="add-button" class="control-button">add</button>
         </div>
 
         <div id="control-buttons">
-          <button id="undo-button">undo</button>
-          <button id="clear-all-button">clear all</button>
+          <div>
+            <button id="undo-button" class="control-button">undo</button>
+            <button id="clear-all-button" class="control-button">clear all</button>
+          </div>
           <div id="search-bar">
             <input type="text" id="search-input" placeholder="Search..">
-            <button id="search-button"></button>
+            <button id="search-button" class="control-button"></button>
           </div>
         </div>
 
         <div id="sorting-bar">
-          <button id="sort-button">Priority</button>
-          <button id="sort-by-date">Created At</button>
-          <button id="sort-by-text">Task</button>
-          <button id="save-order-button">Save Order</button>
+          <button id="sort-button" class="sorting-button"></button>
+          <button id="sort-by-date" class="sorting-button">Created At</button>
+          <button id="sort-by-text" class="sorting-button">Task</button>
+          <button id="save-order-button" class="sorting-button"></button>
         </div>
       </section>
       <section id="view-section"></section>
