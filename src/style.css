@@ -278,12 +278,6 @@ label {
   100% { transform: rotate(360deg); }
 }
 
-.placeholder {
-  background-color: rgba(0,0,0,0.7);
-  border-radius: 5px;
-  margin: 5px 0px;
-}
-
 .todo-container {
   background: linear-gradient(to left top, rgb(255, 255, 255, 1),  rgb(255, 255, 255, 0.8));
   border-radius: 5px;
@@ -398,7 +392,7 @@ label {
 }
 
 .todo-priority .edit-box {
-  max-width: 33%;
+  max-width: 30px;
 }
 
 .done {
@@ -451,10 +445,10 @@ label {
   }
 
   .edit-box {
-    max-width: 100px;
+    max-width: 80%;
   }
 
   .todo-priority .edit-box {
-    max-width: 40px;
+    max-width: 30px;
   }
 }

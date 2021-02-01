@@ -250,15 +250,8 @@ function saveEdits(event) {
   toDoText.textContent = editBoxes[1].value.toLowerCase();
   toDoPriority.textContent = editBoxes[0].value;
   
-  const editButton = document.createElement('button');
-  editButton.className = 'edit-button task-button';
-  
-  // remove save button and add edit button
-  const saveButton = taskContainer.querySelector('.save-button');
-  const extraButtonsContainer = saveButton.parentElement;
-  extraButtonsContainer.append(editButton);
-  extraButtonsContainer.removeChild(saveButton);
-  
+  swapEditSaveButtons(taskContainer);
+
   // save changes in database
   const taskIndex = findElementIndexInTasks(taskContainer);
   tasks[taskIndex].priority = editBoxes[0].value;
@@ -267,11 +260,12 @@ function saveEdits(event) {
 }
 
 // element-creating functions
-
 function createToDoContainer(task) {
   const toDoContainer = document.createElement('div');
   
   toDoContainer.className = 'todo-container';
+
+  // make task draggable on on desktop
   if (document.body.getBoundingClientRect().width > 900) {
     toDoContainer.draggable = true;
   }
@@ -335,12 +329,8 @@ function createTaskObject(input, priority) {
   setPersistent(DB_NAME, tasks);
   return task;
 }
-
-function createEditBoxes(toDoContainer) {
+function createPriorityEditBox(toDoContainer) {
   const taskPriority = toDoContainer.querySelector('.todo-priority');
-  const taskText = toDoContainer.querySelector('.todo-text');
-  
-  const editBoxText = document.createElement('input');
   const editBoxPriority = document.createElement('select');
 
   for (let i = 1; i <= 5; i++) {
@@ -350,26 +340,29 @@ function createEditBoxes(toDoContainer) {
     editBoxPriority.append(option);
   }
 
-  editBoxText.className = 'edit-box';
-  editBoxPriority.className = 'edit-box';
-  
-  editBoxText.value = taskText.textContent;
   editBoxPriority.value = taskPriority.textContent;
+  editBoxPriority.className = 'edit-box';
+
+  taskPriority.textContent = '';
+  taskPriority.append(editBoxPriority);
+}
+
+function createTextEditBox(toDoContainer) {
+  const taskText = toDoContainer.querySelector('.todo-text');
+  const editBoxText = document.createElement('input');
+
+  editBoxText.className = 'edit-box';
+  editBoxText.value = taskText.textContent;
   
   taskText.textContent = '';
-  taskPriority.textContent = '';
-  
-  taskPriority.append(editBoxPriority);
   taskText.append(editBoxText);
+}
+
+function createEditBoxes(toDoContainer) {
+  createTextEditBox(toDoContainer);
+  createPriorityEditBox(toDoContainer);
   
-  const saveButton = document.createElement('button');
-  saveButton.className = 'save-button task-button';
-  
-  // remove edit button and add save button
-  const editButton = toDoContainer.querySelector('.edit-button');
-  const extraButtonsContainer = editButton.parentElement;
-  extraButtonsContainer.append(saveButton);
-  extraButtonsContainer.removeChild(editButton);
+  swapEditSaveButtons(toDoContainer);
 }
 
 function createExtraButtons(done) {
@@ -449,12 +442,12 @@ function sortByPriority() {
 function getDragAfterElement(container, y) {
   // turn draggableElements into a list
   const draggableElements = [...container.querySelectorAll('.todo-container:not(.dragging)')];
-
+  
   // find out the element the draggable is above
   return draggableElements.reduce((closest, child) => {
     const box = child.getBoundingClientRect();
     const offset = y - box.top - box.height / 2;
-
+    
     if (offset < 0 && offset > closest.offset) {
       return { offset: offset, element: child };
     } else {
@@ -499,4 +492,19 @@ function highlight(text) {
     
     taskText.innerHTML = newInnerHTML;
   }
+}
+
+function swapEditSaveButtons(toDoContainer) {
+  const extraButtonsContainer = toDoContainer.querySelector('.extra-buttons');
+  const currentButton = extraButtonsContainer.querySelectorAll('.task-button')[2];
+  let newButton = document.createElement('button');
+
+  if (currentButton.classList[0] === 'save-button') {
+    newButton.className = 'edit-button task-button';
+  } else {
+    newButton.className = 'save-button task-button';
+  }
+
+  extraButtonsContainer.removeChild(currentButton);
+  extraButtonsContainer.append(newButton);
 }
