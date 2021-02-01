@@ -350,26 +350,6 @@ function createToDoCreatedAt(date) {
   toDoCreatedAt.textContent = date;
   return toDoCreatedAt;
 }
-function dateToSqlFormat() {
-  const date = new Date();
-
-  const sec = date.getSeconds().toString();
-  const s = sec.length === 2 ? sec : `0${sec}`;
-
-  const min = date.getMinutes().toString();
-  const m = min.length === 2 ? min : `0${min}`;
-
-  const hour = date.getHours().toString();
-  const h = hour.length === 2 ? hour : `0${hour}`;
-
-  const month = (date.getMonth() + 1).toString();
-  const M = month.length === 2 ? month : `0${month}`;
-
-  const day = date.getDay().toString();
-  const d = day.length === 2 ? day : `0${day}`;
-
-  return `${date.getFullYear()}-${M}-${d} ${h}:${m}:${s}`
-}
 
 function createTaskObject(input, priority) {
   localStorage.setItem(DB_NAME, JSON.stringify(tasks));
@@ -380,7 +360,7 @@ function createTaskObject(input, priority) {
     "date": dateToSqlFormat(),
     "done": false
   }
-
+  
   tasks.push(task);
   setPersistent(DB_NAME, tasks);
   return task;
@@ -445,7 +425,7 @@ function createExtraButtons(done) {
     return buttonsContainer;
   }
   
-// helper functions
+  // helper functions
 function displayToDoList(toDoList) {
   
   for (let task of toDoList) {
@@ -487,7 +467,7 @@ function findElementIndexInTasks(taskContainer) {
 function updateCounter(toDoList) {
   const counter = document.querySelector('#counter');
   counter.textContent = toDoList.length;
-
+  
   if (viewSection.querySelectorAll('.todo-container').length === 0 ) {
     viewSection.classList.add('empty-list');
   } else {
@@ -554,13 +534,34 @@ function swapEditSaveButtons(toDoContainer) {
   const extraButtonsContainer = toDoContainer.querySelector('.extra-buttons');
   const currentButton = extraButtonsContainer.querySelectorAll('.task-button')[2];
   let newButton = document.createElement('button');
-
+  
   if (currentButton.classList[0] === 'save-button') {
     newButton.className = 'edit-button task-button';
   } else {
     newButton.className = 'save-button task-button';
   }
-
+  
   extraButtonsContainer.removeChild(currentButton);
   extraButtonsContainer.append(newButton);
+}
+
+function dateToSqlFormat() {
+  const date = new Date();
+
+  const sec = date.getSeconds().toString();
+  const s = sec.length === 2 ? sec : `0${sec}`;
+
+  const min = date.getMinutes().toString();
+  const m = min.length === 2 ? min : `0${min}`;
+
+  const hour = date.getHours().toString();
+  const h = hour.length === 2 ? hour : `0${hour}`;
+
+  const month = (date.getMonth() + 1).toString();
+  const M = month.length === 2 ? month : `0${month}`;
+
+  const day = date.getDay().toString();
+  const d = day.length === 2 ? day : `0${day}`;
+
+  return `${date.getFullYear()}-${M}-${d} ${h}:${m}:${s}`
 }
