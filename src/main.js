@@ -129,6 +129,7 @@ function clearAll(event) {
     tasks = [];
     updateCounter(tasks);
     setPersistent(DB_NAME, tasks);
+    checkTasksDone();
   } else return;
 }
 
@@ -421,8 +422,9 @@ function checkTasksDone() {
   }
   
   const percentDone = Math.floor(tasksDone / tasks.length * 100);
-  tasksDonePercent.style.width = percentDone + '%';
-  percentInNumbers.textContent = percentDone + '%';
+
+  tasksDonePercent.style.width = tasks.length === 0 ? '0%' : `${percentDone}%`;
+  percentInNumbers.textContent = tasks.length === 0 ? '0%' : `${percentDone}%`;
 }
 
 function findElementIndexInTasks(taskContainer) {
@@ -439,6 +441,12 @@ function findElementIndexInTasks(taskContainer) {
 function updateCounter(toDoList) {
   const counter = document.querySelector('#counter');
   counter.textContent = toDoList.length;
+
+  if (viewSection.querySelectorAll('.todo-container').length === 0 ) {
+    viewSection.classList.add('empty-list');
+  } else {
+    viewSection.classList.remove('empty-list');
+  }
 }
 
 function getDragAfterElement(container, y) {
