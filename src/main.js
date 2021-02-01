@@ -19,14 +19,9 @@ async function start() {
   sortButton = document.querySelector('#sort-button');
   viewSection = document.querySelector('#view-section');
 
+  // events for drag and drop action
   viewSection.addEventListener('dragover', draggingATask);
   window.addEventListener('resize', makeElementsUndraggable);
-  
-  // events for sorting tasks
-  sortButton.addEventListener('click', sortByPriority);
-  document.addEventListener('click', sortByAlphabeticalOrder);
-  document.addEventListener('click', sortByDate);
-  document.addEventListener('click', saveListOrder);
   viewSection.addEventListener('dragend', getNewOrder);
   
   // events for control-buttons
@@ -34,47 +29,27 @@ async function start() {
   document.addEventListener('click', searchText);
   document.addEventListener('click', undo);
   document.addEventListener('click', clearAll);
-
+  
+  // events for sorting tasks
+  sortButton.addEventListener('click', sortByPriority);
+  document.addEventListener('click', sortByAlphabeticalOrder);
+  document.addEventListener('click', sortByDate);
+  document.addEventListener('click', saveListOrder);
+  
   // events for buttons inside todo-container
   document.addEventListener('click', startTransition);
   document.addEventListener('animationend', deleteTask);
   document.addEventListener('click', markTaskDone);
   document.addEventListener('click', editTask);
   document.addEventListener('click', saveEdits);
-
+  
   displayToDoList(tasks);
 }
 start();
 
 // handlers
-function makeElementsUndraggable(event) {
-  const allTasks = document.querySelectorAll('.todo-container');
-  
-  if (document.body.getBoundingClientRect().width <= 900) {
-    for (let task of allTasks) {
-      task.draggable = false;
-    }
-  } else {
-    for (let task of allTasks) {
-      task.draggable = true;
-    }
-  }
-}
 
-function clearAll(event) {
-  const target = event.target;
-  
-  if (target.id !== 'clear-all-button') return;
-  
-  if (confirm('Are you sure you want to clear your ToDo list?')) {
-    clearViewSection();
-    localStorage.setItem(DB_NAME, JSON.stringify(tasks));
-    tasks = [];
-    updateCounter(tasks);
-    setPersistent(DB_NAME, tasks);
-  } else return;
-}
-
+// drag and drop elements handlers
 function getNewOrder(event) {
   const allTasks = viewSection.querySelectorAll('.todo-container');
   let newOrder = [];
@@ -85,6 +60,20 @@ function getNewOrder(event) {
 
   tasksSorted = newOrder;
 }
+
+function makeElementsUndraggable(event) {
+  const allTasks = document.querySelectorAll('.todo-container');
+  
+  if (document.body.getBoundingClientRect().width <= 900) {
+    for (let task of allTasks) {
+      task.draggable = false;
+    }  
+  } else {
+    for (let task of allTasks) {
+      task.draggable = true;
+    }  
+  }  
+}  
 
 function draggingATask(event) {
   event.preventDefault();
@@ -97,45 +86,23 @@ function draggingATask(event) {
   } else {
     viewSection.insertBefore(toDoContainer, afterElement);
   }
-
 }
 
-function startTransition(event) {
-  const target = event.target;
+// control buttons handlers
+function addToDoContainer() {
+  const input = document.querySelector('#text-input');
+  const priority = document.getElementById('priority-selector');
   
-  if (target.classList[0] !== 'delete-button') return;
+  if (input.value === '') return;
   
-  const toDoContainer = target.parentElement.parentElement;
-  toDoContainer.style.animation = 'leave 0.5s';
-}
-
-function saveListOrder(event) {
-  if (event.target.id !== 'save-order-button') return;
-  if (tasksSorted === undefined) return;
-  tasks = tasksSorted;
-  setPersistent(DB_NAME, tasks);
-}
-
-function sortByDate(event) {
-  if (event.target.id !== 'sort-by-date') return;
+  const task = createTaskObject(input, priority);
+  createToDoContainer(task);
   
-  tasksSorted = tasks.sort((a, b) => {
-    return new Date(b.date) - new Date(a.date);
-  });
+  input.value = '';
+  input.focus();
   
-  clearViewSection();
-  displayToDoList(tasksSorted);
-}
-
-function sortByAlphabeticalOrder(event) {
-  if (event.target.id !== 'sort-by-text') return;
-  
-  tasksSorted = tasks.sort((a, b) => {
-    return a.text.localeCompare(b.text);
-  });
-  
-  clearViewSection();
-  displayToDoList(tasksSorted);
+  updateCounter(tasks);
+  checkTasksDone();
 }
 
 function undo(event) {
@@ -144,7 +111,8 @@ function undo(event) {
   if (target.id !== 'undo-button') return;
 
   tasks = JSON.parse(localStorage.getItem(DB_NAME));
-  clearViewSection();
+  viewSection.innerHTML = '';
+
   displayToDoList(tasks);
   setPersistent(DB_NAME, tasks);
 }
@@ -161,42 +129,60 @@ function searchText(event) {
   searchInput.focus();
 }
 
-function highlight(text) {
-  const taskTexts = document.querySelectorAll('.todo-text');
+// sorting buttons handlers
+function clearAll(event) {
+  const target = event.target;
   
-  for (let taskText of taskTexts) {
-    const taskInnerHTML = taskText.textContent;
-    
-    if (text === '') {
-      taskText.innerHTML = taskText.textContent;
-      continue;
-    }
-    
-    // get all occurrences of a search text in the task
-    let textIndexes = [];
-    let index = taskInnerHTML.indexOf(text, 0);
-    
-    while (index >= 0) {
-      textIndexes.push(index);
-      index = taskInnerHTML.indexOf(text, index + 1)
-    }
-    
-    const numberOfOccurrences = textIndexes.length;
-    
-    if (numberOfOccurrences === 0) {
-      taskText.innerHTML = taskText.textContent;
-      continue;
-    }
-    
-    let newInnerHTML = `${taskInnerHTML.substring(0,textIndexes[0])}`;
-    
-    for (let i = 0; i < numberOfOccurrences; i++) {
-      
-      newInnerHTML = newInnerHTML + `<span class='highlight'>${text}</span>${taskInnerHTML.substring(textIndexes[i] + text.length, textIndexes[i + 1])}`
-    }
-    
-    taskText.innerHTML = newInnerHTML;
-  }
+  if (target.id !== 'clear-all-button') return;
+  
+  if (confirm('Are you sure you want to clear your ToDo list?')) {
+    viewSection.innerHTML = '';
+
+    localStorage.setItem(DB_NAME, JSON.stringify(tasks));
+    tasks = [];
+    updateCounter(tasks);
+    setPersistent(DB_NAME, tasks);
+  } else return;
+}
+
+function saveListOrder(event) {
+  if (event.target.id !== 'save-order-button') return;
+  if (tasksSorted === undefined) return;
+  tasks = tasksSorted;
+  setPersistent(DB_NAME, tasks);
+}
+
+function sortByDate(event) {
+  if (event.target.id !== 'sort-by-date') return;
+
+  tasksSorted = tasks.sort((a, b) => {
+    return new Date(b.date) - new Date(a.date);
+  });
+  
+  viewSection.innerHTML = '';
+  displayToDoList(tasksSorted);
+}
+
+function sortByAlphabeticalOrder(event) {
+  if (event.target.id !== 'sort-by-text') return;
+  
+  tasksSorted = tasks.sort((a, b) => {
+    return a.text.localeCompare(b.text);
+  });
+  
+  viewSection.innerHTML = '';
+
+  displayToDoList(tasksSorted);
+}
+
+// todo container's extra button's handlers
+function startTransition(event) {
+  const target = event.target;
+  
+  if (target.classList[0] !== 'delete-button') return;
+  
+  const toDoContainer = target.parentElement.parentElement;
+  toDoContainer.style.animation = 'leave 0.5s';
 }
 
 function deleteTask(event) {
@@ -280,23 +266,76 @@ function saveEdits(event) {
   setPersistent(DB_NAME, tasks);
 }
 
-function addToDoContainer() {
-  const input = document.querySelector('#text-input');
-  const priority = document.getElementById('priority-selector');
+// element-creating functions
+
+function createToDoContainer(task) {
+  const toDoContainer = document.createElement('div');
   
-  if (input.value === '') return;
+  toDoContainer.className = 'todo-container';
+  if (document.body.getBoundingClientRect().width > 900) {
+    toDoContainer.draggable = true;
+  }
+
+  toDoContainer.addEventListener('dragstart', () => {
+    toDoContainer.classList.add('dragging');
+  });
+
+  toDoContainer.addEventListener('dragend', () => {
+    toDoContainer.classList.remove('dragging');
+  });
   
-  const task = createTaskObject(input, priority);
-  createToDoContainer(task);
-  
-  input.value = '';
-  input.focus();
-  
-  updateCounter(tasks);
-  checkTasksDone();
+  toDoContainer.append(
+    createToDoPriority(task['priority']),
+    createToDoCreatedAt(task['date']),
+    createToDoText(task['text'], task['done']),
+    createExtraButtons(task['done']));
+    viewSection.appendChild(toDoContainer);
 }
 
-// element-creating functions
+function createToDoPriority(priority) {
+  const toDoPriority = document.createElement('div');
+  
+  toDoPriority.className = 'todo-priority';
+  toDoPriority.textContent = priority;
+  return toDoPriority;
+}
+
+function createToDoText(input, done) {
+  const toDoText = document.createElement('div');
+  
+  if (done) {
+    toDoText.className = 'todo-text done';
+  } else {
+    toDoText.className = 'todo-text';
+  }
+  
+  toDoText.textContent = input.toLowerCase();
+  return toDoText;
+}
+
+function createToDoCreatedAt(date) {
+  const toDoCreatedAt = document.createElement('div');
+  
+  toDoCreatedAt.className = 'todo-created-at';
+  toDoCreatedAt.textContent = date;
+  return toDoCreatedAt;
+}
+
+function createTaskObject(input, priority) {
+  localStorage.setItem(DB_NAME, JSON.stringify(tasks));
+
+  const task = {
+    "text": input.value,
+    "priority": priority.value,
+    "date": new Date().toISOString().slice(0, 19).replace('T', ' '),
+    "done": false
+  }
+
+  tasks.push(task);
+  setPersistent(DB_NAME, tasks);
+  return task;
+}
+
 function createEditBoxes(toDoContainer) {
   const taskPriority = toDoContainer.querySelector('.todo-priority');
   const taskText = toDoContainer.querySelector('.todo-text');
@@ -333,72 +372,6 @@ function createEditBoxes(toDoContainer) {
   extraButtonsContainer.removeChild(editButton);
 }
 
-function createToDoPriority(priority) {
-  const toDoPriority = document.createElement('div');
-  
-  toDoPriority.className = 'todo-priority';
-  toDoPriority.textContent = priority;
-  return toDoPriority;
-}
-
-function createToDoText(input, done) {
-  const toDoText = document.createElement('div');
-  
-  if (done) {
-    toDoText.className = 'todo-text done';
-  } else {
-    toDoText.className = 'todo-text';
-  }
-  
-  toDoText.textContent = input.toLowerCase();
-  return toDoText;
-}
-
-function createToDoCreatedAt(date) {
-  const toDoCreatedAt = document.createElement('div');
-  
-  toDoCreatedAt.className = 'todo-created-at';
-  toDoCreatedAt.textContent = date;
-  return toDoCreatedAt;
-}
-
-function createToDoContainer(task) {
-  const toDoContainer = document.createElement('div');
-  
-  toDoContainer.className = 'todo-container';
-  if (document.body.getBoundingClientRect().width > 900) {
-    toDoContainer.draggable = true;
-  }
-
-  toDoContainer.addEventListener('dragstart', () => {
-    toDoContainer.classList.add('dragging');
-  });
-
-  toDoContainer.addEventListener('dragend', () => {
-    toDoContainer.classList.remove('dragging');
-  });
-  
-  toDoContainer.append(
-    createToDoPriority(task['priority']),
-    createToDoCreatedAt(task['date']),
-    createToDoText(task['text'], task['done']),
-    createExtraButtons(task['done']));
-    viewSection.appendChild(toDoContainer);
-}
-
-  function createTaskObject(input, priority) {
-    localStorage.setItem(DB_NAME, JSON.stringify(tasks));
-    const task = {
-      "text": input.value,
-      "priority": priority.value,
-    "date": new Date().toISOString().slice(0, 19).replace('T', ' '),
-    "done": false
-  }
-  tasks.push(task);
-  setPersistent(DB_NAME, tasks);
-  return task;
-}
-
 function createExtraButtons(done) {
   const deleteButton = document.createElement('button');
   const editButton = document.createElement('button');
@@ -423,7 +396,7 @@ function createExtraButtons(done) {
     return buttonsContainer;
   }
   
-  // helper functions
+// helper functions
 function displayToDoList(toDoList) {
   
   for (let task of toDoList) {
@@ -469,16 +442,8 @@ function sortByPriority() {
     return b.priority - a.priority;
   });
   
-  clearViewSection();
+  viewSection.innerHTML = '';
   displayToDoList(tasksSorted);
-}
-
-function clearViewSection() {
-  const allTasks = document.querySelectorAll('.todo-container');
-  
-  for (let task of allTasks) {
-    task.parentNode.removeChild(task);
-  }
 }
 
 function getDragAfterElement(container, y) {
@@ -496,4 +461,42 @@ function getDragAfterElement(container, y) {
       return closest;
     }
   }, { offset: Number.NEGATIVE_INFINITY }).element;
+}
+
+function highlight(text) {
+  const taskTexts = document.querySelectorAll('.todo-text');
+  
+  for (let taskText of taskTexts) {
+    const taskInnerHTML = taskText.textContent;
+    
+    if (text === '') {
+      taskText.innerHTML = taskText.textContent;
+      continue;
+    }
+    
+    // get all occurrences of a search text in the task
+    let textIndexes = [];
+    let index = taskInnerHTML.indexOf(text, 0);
+    
+    while (index >= 0) {
+      textIndexes.push(index);
+      index = taskInnerHTML.indexOf(text, index + 1)
+    }
+    
+    const numberOfOccurrences = textIndexes.length;
+    
+    if (numberOfOccurrences === 0) {
+      taskText.innerHTML = taskText.textContent;
+      continue;
+    }
+    
+    let newInnerHTML = `${taskInnerHTML.substring(0,textIndexes[0])}`;
+    
+    for (let i = 0; i < numberOfOccurrences; i++) {
+      
+      newInnerHTML = newInnerHTML + `<span class='highlight'>${text}</span>${taskInnerHTML.substring(textIndexes[i] + text.length, textIndexes[i + 1])}`
+    }
+    
+    taskText.innerHTML = newInnerHTML;
+  }
 }
