@@ -5,6 +5,9 @@ let counts;
 let addButton;
 let sortButton;
 let viewSection;
+let prioritySorted = false;
+let dateSorted = false;
+let alphabeticallySorted = false;
 
 async function start() {
   tasks = await getPersistent(DB_NAME);
@@ -147,9 +150,55 @@ function searchText(event) {
 
 // sorting buttons handlers
 function sortByPriority() {
-  tasksSorted = tasks.sort((a, b) => {
-    return b.priority - a.priority;
-  });
+  if (!prioritySorted) {
+    tasksSorted = tasks.sort((a, b) => {
+      return b.priority - a.priority;
+    });
+    prioritySorted = true;
+  } else {
+    tasksSorted = tasks.sort((a, b) => {
+      return a.priority - b.priority;
+    });
+    prioritySorted = false;
+  }
+  
+  viewSection.innerHTML = '';
+  displayToDoList(tasksSorted);
+}
+
+function sortByDate(event) {
+  if (event.target.id !== 'sort-by-date') return;
+  
+  if (!dateSorted) {
+    tasksSorted = tasks.sort((a, b) => {
+      return new Date(b.date) - new Date(a.date);
+    });
+    dateSorted = true;
+  } else {
+    tasksSorted = tasks.sort((a, b) => {
+      return new Date(a.date) - new Date(b.date);
+    });
+    dateSorted = false;
+  }
+
+  viewSection.innerHTML = '';
+  displayToDoList(tasksSorted);
+}
+
+function sortByAlphabeticalOrder(event) {
+  if (event.target.id !== 'sort-by-text') return;
+  
+  if (!alphabeticallySorted) {
+    tasksSorted = tasks.sort((a, b) => {
+      return a.text.localeCompare(b.text);
+    });
+    alphabeticallySorted = true;
+  } else {
+    tasksSorted = tasks.sort((a, b) => {
+      return b.text.localeCompare(a.text);
+    });
+    alphabeticallySorted = false;
+  }
   
   viewSection.innerHTML = '';
   displayToDoList(tasksSorted);
@@ -160,29 +209,6 @@ function saveListOrder(event) {
   if (tasksSorted === undefined) return;
   tasks = tasksSorted;
   setPersistent(DB_NAME, tasks);
-}
-
-function sortByDate(event) {
-  if (event.target.id !== 'sort-by-date') return;
-
-  tasksSorted = tasks.sort((a, b) => {
-    return new Date(b.date) - new Date(a.date);
-  });
-  
-  viewSection.innerHTML = '';
-  displayToDoList(tasksSorted);
-}
-
-function sortByAlphabeticalOrder(event) {
-  if (event.target.id !== 'sort-by-text') return;
-  
-  tasksSorted = tasks.sort((a, b) => {
-    return a.text.localeCompare(b.text);
-  });
-  
-  viewSection.innerHTML = '';
-
-  displayToDoList(tasksSorted);
 }
 
 // todo container's extra button's handlers
