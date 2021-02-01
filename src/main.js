@@ -20,6 +20,7 @@ async function start() {
   viewSection = document.querySelector('#view-section');
   
   viewSection.addEventListener('dragover', draggingATask);
+  viewSection.addEventListener('dragend', getNewOrder);
   addButton.addEventListener('click', addToDoContainer);
   sortButton.addEventListener('click', sortByPriority);
   document.addEventListener('animationend', deleteTask);
@@ -38,6 +39,16 @@ async function start() {
 start();
 
 // handlers
+function getNewOrder(event) {
+  const allTasks = viewSection.querySelectorAll('.todo-container');
+  let newOrder = [];
+
+  for (let task of allTasks) {
+    newOrder.push(tasks[findElementIndexInTasks(task)]);
+  }
+
+  tasksSorted = newOrder;
+}
 
 function draggingATask(event) {
   event.preventDefault();
@@ -50,23 +61,7 @@ function draggingATask(event) {
   } else {
     viewSection.insertBefore(toDoContainer, afterElement);
   }
-}
 
-function getDragAfterElement(container, y) {
-  // turn draggableElements into a list
-  const draggableElements = [...container.querySelectorAll('.todo-container:not(.dragging)')];
-
-  // find out the element the draggable is above
-  return draggableElements.reduce((closest, child) => {
-    const box = child.getBoundingClientRect();
-    const offset = y - box.top - box.height / 2;
-
-    if (offset < 0 && offset > closest.offset) {
-      return { offset: offset, element: child };
-    } else {
-      return closest;
-    }
-  }, { offset: Number.NEGATIVE_INFINITY }).element;
 }
 
 function startTransition(event) {
@@ -283,7 +278,7 @@ function createEditBoxes(toDoContainer) {
   
   const editBoxText = document.createElement('input');
   const editBoxPriority = document.createElement('input');
-
+  
   editBoxText.value = taskText.textContent;
   editBoxPriority.value = taskPriority.textContent;
   
@@ -358,7 +353,7 @@ function createToDoContainer(task) {
     createExtraButtons(task['done']));
     viewSection.appendChild(toDoContainer);
 }
-  
+
   function createTaskObject(input, priority) {
     localStorage.setItem(DB_NAME, JSON.stringify(tasks));
     const task = {
@@ -451,4 +446,21 @@ function clearViewSection() {
   for (let task of allTasks) {
     task.parentNode.removeChild(task);
   }
+}
+
+function getDragAfterElement(container, y) {
+  // turn draggableElements into a list
+  const draggableElements = [...container.querySelectorAll('.todo-container:not(.dragging)')];
+
+  // find out the element the draggable is above
+  return draggableElements.reduce((closest, child) => {
+    const box = child.getBoundingClientRect();
+    const offset = y - box.top - box.height / 2;
+
+    if (offset < 0 && offset > closest.offset) {
+      return { offset: offset, element: child };
+    } else {
+      return closest;
+    }
+  }, { offset: Number.NEGATIVE_INFINITY }).element;
 }
