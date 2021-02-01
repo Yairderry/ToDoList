@@ -34,11 +34,26 @@ async function start() {
   document.addEventListener('click', sortByAlphabeticalOrder);
   document.addEventListener('click', sortByDate);
   document.addEventListener('click', saveListOrder);
+  window.addEventListener('resize', makeElementsUndraggable);
   displayToDoList(tasks);
 }
 start();
 
 // handlers
+function makeElementsUndraggable(event) {
+  const allTasks = document.querySelectorAll('.todo-container');
+  
+  if (document.body.getBoundingClientRect().width <= 900) {
+    for (let task of allTasks) {
+      task.draggable = false;
+    }
+  } else {
+    for (let task of allTasks) {
+      task.draggable = true;
+    }
+  }
+}
+
 function clearAll(event) {
   const target = event.target;
   
@@ -341,10 +356,14 @@ function createToDoContainer(task) {
   const toDoContainer = document.createElement('div');
   
   toDoContainer.className = 'todo-container';
-  toDoContainer.draggable = true;
+  if (document.body.getBoundingClientRect().width > 900) {
+    toDoContainer.draggable = true;
+  }
+
   toDoContainer.addEventListener('dragstart', () => {
     toDoContainer.classList.add('dragging');
   });
+
   toDoContainer.addEventListener('dragend', () => {
     toDoContainer.classList.remove('dragging');
   });
