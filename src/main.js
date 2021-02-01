@@ -350,6 +350,26 @@ function createToDoCreatedAt(date) {
   toDoCreatedAt.textContent = date;
   return toDoCreatedAt;
 }
+function dateToSqlFormat() {
+  const date = new Date();
+
+  const sec = date.getSeconds().toString();
+  const s = sec.length === 2 ? sec : `0${sec}`;
+
+  const min = date.getMinutes().toString();
+  const m = min.length === 2 ? min : `0${min}`;
+
+  const hour = date.getHours().toString();
+  const h = hour.length === 2 ? hour : `0${hour}`;
+
+  const month = (date.getMonth() + 1).toString();
+  const M = month.length === 2 ? month : `0${month}`;
+
+  const day = date.getDay().toString();
+  const d = day.length === 2 ? day : `0${day}`;
+
+  return `${date.getFullYear()}-${M}-${d} ${h}:${m}:${s}`
+}
 
 function createTaskObject(input, priority) {
   localStorage.setItem(DB_NAME, JSON.stringify(tasks));
@@ -357,7 +377,7 @@ function createTaskObject(input, priority) {
   const task = {
     "text": input.value,
     "priority": priority.value,
-    "date": new Date().toISOString().slice(0, 19).replace('T', ' '),
+    "date": dateToSqlFormat(),
     "done": false
   }
 
