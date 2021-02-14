@@ -509,7 +509,7 @@ function highlight(text) {
     
     while (index >= 0) {
       textIndexes.push(index);
-      index = taskInnerHTML.indexOf(text, index + 1)
+      index = taskInnerHTML.indexOf(text, index + text.length)
     }
     
     const numberOfOccurrences = textIndexes.length;
@@ -522,8 +522,8 @@ function highlight(text) {
     let newInnerHTML = `${taskInnerHTML.substring(0,textIndexes[0])}`;
     
     for (let i = 0; i < numberOfOccurrences; i++) {
-      
-      newInnerHTML = newInnerHTML + `<span class='highlight'>${text}</span>${taskInnerHTML.substring(textIndexes[i] + text.length, textIndexes[i + 1])}`
+      // if (i + text.length > taskInnerHTML.length) break;
+      newInnerHTML = newInnerHTML + `<span class='highlight'>${text}</span>${taskInnerHTML.substring(textIndexes[i] + text.length, textIndexes[i + 1])}`;
     }
     
     taskText.innerHTML = newInnerHTML;
@@ -560,7 +560,7 @@ function dateToSqlFormat() {
   const month = (date.getMonth() + 1).toString();
   const M = month.length === 2 ? month : `0${month}`;
 
-  const day = date.getDay().toString();
+  const day = date.getDate().toString();
   const d = day.length === 2 ? day : `0${day}`;
 
   return `${date.getFullYear()}-${M}-${d} ${h}:${m}:${s}`
