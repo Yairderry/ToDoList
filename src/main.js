@@ -110,7 +110,6 @@ function undo(event) {
   viewSection.innerHTML = '';
 
   displayToDoList(tasks);
-  // setPersistent(DB_NAME, tasks);
   setWithXHR(DB_NAME, tasks);
 }
 
@@ -125,7 +124,6 @@ function clearAll(event) {
     localStorage.setItem(DB_NAME, JSON.stringify(tasks));
     tasks = [];
     updateCounter(tasks);
-    // setPersistent(DB_NAME, tasks);
     setWithXHR(DB_NAME, tasks);
     checkTasksDone();
   } else return;
@@ -226,7 +224,6 @@ function deleteTask(event) {
   
   localStorage.setItem(DB_NAME, JSON.stringify(tasks));
   tasks.splice(containerIndex, 1);
-  // setPersistent(DB_NAME, tasks);
   setWithXHR(DB_NAME, tasks);
   
   updateCounter(tasks);
@@ -246,7 +243,6 @@ function markTaskDone(event) {
   const containerIndex = findElementIndexInTasks(toDoContainer);
   
   tasks[containerIndex].done = !tasks[containerIndex].done;
-  // setPersistent(DB_NAME, tasks);
   setWithXHR(DB_NAME, tasks);
   
   if (tasks[containerIndex].done) {
@@ -290,7 +286,6 @@ function saveEdits(event) {
   const taskIndex = findElementIndexInTasks(taskContainer);
   tasks[taskIndex].priority = editBoxes[0].value;
   tasks[taskIndex].text = editBoxes[1].value;
-  // setPersistent(DB_NAME, tasks);
   setWithXHR(DB_NAME, tasks);
 }
 
@@ -361,7 +356,6 @@ function createTaskObject(input, priority) {
   }
   
   tasks.push(task);
-  // setPersistent(DB_NAME, tasks);
   setWithXHR(DB_NAME, tasks);
   return task;
 }
@@ -427,7 +421,8 @@ function createExtraButtons(done) {
 
 function createLoader() {
   // check for existing loader
-  const currentLoader = document.querySelector('.loader');
+  const currentLoader = document.querySelector('.loader') === null ?
+    document.querySelector('.request-failed') : null;
 
   if (currentLoader !== null) {
     return currentLoader;
