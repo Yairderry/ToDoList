@@ -10,7 +10,8 @@ let dateSorted = false;
 let alphabeticallySorted = false;
 
 function start() {
-  getPersistent(DB_NAME);
+  getWithXHR();
+  // getPersistent(DB_NAME);
 
   addButton = document.querySelector('#add-button');
   sortButton = document.querySelector('#sort-button');
@@ -109,7 +110,8 @@ function undo(event) {
   viewSection.innerHTML = '';
 
   displayToDoList(tasks);
-  setPersistent(DB_NAME, tasks);
+  // setPersistent(DB_NAME, tasks);
+  setWithXHR(DB_NAME, tasks);
 }
 
 function clearAll(event) {
@@ -123,7 +125,8 @@ function clearAll(event) {
     localStorage.setItem(DB_NAME, JSON.stringify(tasks));
     tasks = [];
     updateCounter(tasks);
-    setPersistent(DB_NAME, tasks);
+    // setPersistent(DB_NAME, tasks);
+    setWithXHR(DB_NAME, tasks);
     checkTasksDone();
   } else return;
 }
@@ -200,7 +203,8 @@ function saveListOrder(event) {
   if (event.target.id !== 'save-order-button') return;
   if (tasksSorted === undefined) return;
   tasks = tasksSorted;
-  setPersistent(DB_NAME, tasks);
+  // setPersistent(DB_NAME, tasks);
+  setWithXHR(DB_NAME, tasks);
 }
 
 // todo container's extra button's handlers
@@ -222,7 +226,8 @@ function deleteTask(event) {
   
   localStorage.setItem(DB_NAME, JSON.stringify(tasks));
   tasks.splice(containerIndex, 1);
-  setPersistent(DB_NAME, tasks);
+  // setPersistent(DB_NAME, tasks);
+  setWithXHR(DB_NAME, tasks);
   
   updateCounter(tasks);
   checkTasksDone();
@@ -241,7 +246,8 @@ function markTaskDone(event) {
   const containerIndex = findElementIndexInTasks(toDoContainer);
   
   tasks[containerIndex].done = !tasks[containerIndex].done;
-  setPersistent(DB_NAME, tasks);
+  // setPersistent(DB_NAME, tasks);
+  setWithXHR(DB_NAME, tasks);
   
   if (tasks[containerIndex].done) {
     target.className = 'undone-button task-button';
@@ -284,7 +290,8 @@ function saveEdits(event) {
   const taskIndex = findElementIndexInTasks(taskContainer);
   tasks[taskIndex].priority = editBoxes[0].value;
   tasks[taskIndex].text = editBoxes[1].value;
-  setPersistent(DB_NAME, tasks);
+  // setPersistent(DB_NAME, tasks);
+  setWithXHR(DB_NAME, tasks);
 }
 
 // element-creating functions
@@ -354,7 +361,8 @@ function createTaskObject(input, priority) {
   }
   
   tasks.push(task);
-  setPersistent(DB_NAME, tasks);
+  // setPersistent(DB_NAME, tasks);
+  setWithXHR(DB_NAME, tasks);
   return task;
 }
 function createPriorityEditBox(toDoContainer) {
