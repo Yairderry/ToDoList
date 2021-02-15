@@ -11,19 +11,27 @@ function getPersistent(key) {
     }
   };
   const request = new Request(URL, init);
-  const viewSection = document.querySelector('#view-section');
-  viewSection.innerHTML = `<div class="loader"></div>`;
+  const loader = createLoader();
   let dataPromise = fetch(request).then(res => {
     if (!res.ok) {
-      throw new Error("couldn't get data from server");
+      throw new Error("Error: failed to get data from server");
     }
 
     viewSection.innerHTML = '';
     return res.json().then(data => {
-      return data.record[DB_NAME];
+      tasks = data.record[DB_NAME];
+    
+        if (tasks === null) {
+          tasks = []; 
+        }
+
+        counts = tasks.length;
+        displayToDoList(tasks);
     })
   }).catch(error => {
-      viewSection.innerHTML = error;
+      loader.classList.add('request-failed');
+      loader.classList.remove('loader');
+      loader.textContent = error;
   })
   return dataPromise;
 }
@@ -41,15 +49,32 @@ function setPersistent(key, data) {
     },
     body: JSON.stringify(dataObj)
   };
+  const loader = createLoader();
+  const request = new Request(URL, init);
+  fetch(request).then(res => {
+    if (!res.ok) {
+      throw new Error("Error: failed to send data to server");
+    }
+
+    viewSection.removeChild(loader);
+  }).catch(error => {
+    loader.classList.add('request-failed');
+    loader.classList.remove('loader');
+    loader.textContent = error;
+})
+}
+
+function createLoader() {
   const viewSection = document.querySelector('#view-section');
   const firstTask = document.querySelector('.todo-container');
   const loader = document.createElement('div');
   loader.className = 'loader';
-  viewSection.insertBefore(loader, firstTask);
-  const request = new Request(URL, init);
-  fetch(request).then(res => {
-    if (res.ok) {
-      viewSection.removeChild(loader);
-    }
-  })
+
+  if (firstTask === undefined) {
+    viewSection.appendChild(loader);
+  } else {
+    viewSection.insertBefore(loader, firstTask);
+  }
+
+  return loader;
 }

@@ -10,16 +10,7 @@ let dateSorted = false;
 let alphabeticallySorted = false;
 
 function start() {
-  getPersistent(DB_NAME).then(res => {
-    tasks = res;
-    
-    if (tasks === null) {
-      tasks = []; 
-    }
-
-    counts = tasks.length;
-    displayToDoList(tasks);
-  })
+  getPersistent(DB_NAME);
 
   addButton = document.querySelector('#add-button');
   sortButton = document.querySelector('#sort-button');

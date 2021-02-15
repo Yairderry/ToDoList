@@ -277,14 +277,25 @@ label {
 }
 
 .loader {
-  border: 16px solid transparent;
+  height: 2.5vw;
+  width: 2.5vw;
   border-radius: 50%;
-  border-top: 16px solid #ffffff;
-  width: 120px;
-  height: 120px;
-  animation: spin 2s linear infinite;
-  align-self: center;
-  margin-top: 20px;
+  background-color: rgba(32, 97, 86, 0.9);
+  z-index: 10;
+  animation: move 1.5s infinite;
+}
+
+.request-failed {
+  width: 100%;
+  border-radius: none;
+  background-color: none;
+  animation: none;
+}
+
+@keyframes move {
+  0% { transform: translateX(0px); }
+  50% { transform: translateX(60vw); }
+  100% { transform: translateX(0px); }
 }
 
 @keyframes spin {
@@ -452,6 +463,17 @@ label {
     width: 95%;
     padding: 10px 0px;
     min-height: 50vh;
+  }
+
+  .loader {
+    height: 5vw;
+    width: 5vw;
+  }
+
+  @keyframes move {
+    0% { transform: translateX(0px); }
+    50% { transform: translateX(85vw); }
+    100% { transform: translateX(0px); }
   }
 
   .empty-list {
