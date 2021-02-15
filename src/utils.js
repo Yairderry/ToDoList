@@ -63,18 +63,3 @@ function setPersistent(key, data) {
     loader.textContent = error;
 })
 }
-
-function createLoader() {
-  const viewSection = document.querySelector('#view-section');
-  const firstTask = document.querySelector('.todo-container');
-  const loader = document.createElement('div');
-  loader.className = 'loader';
-
-  if (firstTask === undefined) {
-    viewSection.appendChild(loader);
-  } else {
-    viewSection.insertBefore(loader, firstTask);
-  }
-
-  return loader;
-}

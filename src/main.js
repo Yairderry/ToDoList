@@ -415,9 +415,32 @@ function createExtraButtons(done) {
     deleteButton,
     editButton)
     return buttonsContainer;
+}
+
+function createLoader() {
+  // check for existing loader
+  const currentLoader = document.querySelector('.loader');
+
+  if (currentLoader !== null) {
+    return currentLoader;
   }
+
+  // create loader 
+  const viewSection = document.querySelector('#view-section');
+  const firstTask = document.querySelector('.todo-container');
+  const loader = document.createElement('div');
+  loader.className = 'loader';
+
+  if (firstTask === undefined || firstTask === null) {
+    viewSection.appendChild(loader);
+  } else {
+    viewSection.insertBefore(loader, firstTask);
+  }
+
+  return loader;
+}
   
-  // helper functions
+// helper functions
 function displayToDoList(toDoList) {
   
   for (let task of toDoList) {
