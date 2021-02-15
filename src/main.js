@@ -9,15 +9,18 @@ let prioritySorted = false;
 let dateSorted = false;
 let alphabeticallySorted = false;
 
-async function start() {
-  tasks = await getPersistent(DB_NAME);
+function start() {
+  getPersistent(DB_NAME).then(res => {
+    tasks = res;
+    
+    if (tasks === null) {
+      tasks = []; 
+    }
 
-  if (tasks === null) {
-    tasks = []; 
-  }
+    counts = tasks.length;
+    displayToDoList(tasks);
+  })
 
-  counts = tasks.length;
-  
   addButton = document.querySelector('#add-button');
   sortButton = document.querySelector('#sort-button');
   viewSection = document.querySelector('#view-section');
@@ -45,8 +48,6 @@ async function start() {
   document.addEventListener('click', markTaskDone);
   document.addEventListener('click', editTask);
   document.addEventListener('click', saveEdits);
-  
-  displayToDoList(tasks);
 }
 start();
 

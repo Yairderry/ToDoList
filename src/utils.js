@@ -3,7 +3,7 @@ const DB_NAME = "my-todo";
 const URL = "https://api.jsonbin.io/v3/b/6012df127bfaff74c3995478";
 
 // Gets data from persistent storage by the given key and returns it
-async function getPersistent(key) {
+function getPersistent(key) {
   const init = {
     method: "GET",
     headers: {
@@ -13,15 +13,23 @@ async function getPersistent(key) {
   const request = new Request(URL, init);
   const viewSection = document.querySelector('#view-section');
   viewSection.innerHTML = `<div class="loader"></div>`;
-  let data = await fetch(request);
-  data = await data.json();
-  viewSection.innerHTML = '';
-  return data.record[key];
+  let dataPromise = fetch(request).then(res => {
+    if (!res.ok) {
+      throw new Error("couldn't get data from server");
+    }
+
+    viewSection.innerHTML = '';
+    return res.json().then(data => {
+      return data.record[DB_NAME];
+    })
+  }).catch(error => {
+      viewSection.innerHTML = error;
+  })
+  return dataPromise;
 }
 
 // Saves the given data into persistent storage by the given key.
-// Returns 'true' on success.
-async function setPersistent(key, data) {
+function setPersistent(key, data) {
   const dataObj = {};
   dataObj[key] = data;
   const init = {
@@ -33,7 +41,15 @@ async function setPersistent(key, data) {
     },
     body: JSON.stringify(dataObj)
   };
+  const viewSection = document.querySelector('#view-section');
+  const firstTask = document.querySelector('.todo-container');
+  const loader = document.createElement('div');
+  loader.className = 'loader';
+  viewSection.insertBefore(loader, firstTask);
   const request = new Request(URL, init);
-  let response = await fetch(request);
-  return response.ok;
+  fetch(request).then(res => {
+    if (res.ok) {
+      viewSection.removeChild(loader);
+    }
+  })
 }
