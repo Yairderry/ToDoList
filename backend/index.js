@@ -3,10 +3,11 @@ const app = express();
 app.use(express.json());
 
 const {readFileSync} = require('fs');
+const {writeFileSync} = require('fs');
 const userBins = JSON.parse(readFileSync('./userBins.JSON', {encoding:'utf8', flag:'r'}));
 
 app.get('/b', (req, res)=>{
-    res.send(userBins)
+    res.send(JSON.stringify(userBins))
 });
 
 app.get('/b/:id', (req, res)=>{
@@ -24,9 +25,10 @@ app.post('/b',(req, res)=>{
 app.put('/b/:id',(req, res)=>{
     const id = req.params.id;
     for(let i = 0; i< userBins.length; i++){
-        console.log(userBins[i].id);
         if(userBins[i].id === id){
             userBins[i] = req.body;
+            writeFileSync("userBins.JSON", JSON.stringify(userBins));
+            writeFileSync(`${id}.JSON`, JSON.stringify(req.body));
             res.send(req.body);
         }
     }
