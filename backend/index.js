@@ -1,26 +1,27 @@
 const express = require('express');
+const fs = require('fs');
 const app = express();
 app.use(express.json());
 
-const {readFileSync} = require('fs');
-const {writeFileSync} = require('fs');
-const userBins = JSON.parse(readFileSync('./userBins.JSON', {encoding:'utf8', flag:'r'}));
+// const {fs.readFileSync} = require('fs');
+// const {fs.writeFileSync} = require('fs');
+const userBins = JSON.parse(fs.readFileSync('./backend/userBins.JSON', {encoding:'utf8', flag:'r'}));
 
 app.get('/b', (req, res)=>{
-    res.send(JSON.stringify(userBins))
+    res.send(JSON.stringify(userBins, null, 4))
 });
 
 app.get('/b/:id', (req, res)=>{
     const id = req.params.id;
-    const data = readFileSync('./' + id + '.JSON', 
+    const data = fs.readFileSync('./backend/' + id + '.JSON', 
             {encoding:'utf8', flag:'r'});
     res.send(data);
 });
 
 app.post('/b',(req, res)=>{
     userBins.push(req.body);
-    writeFileSync("userBins.JSON", JSON.stringify(userBins));
-    writeFileSync(`${req.body.id}.JSON`, JSON.stringify(req.body));
+    fs.writeFileSync("./backend/userBins.JSON", JSON.stringify(userBins, null, 4));
+    fs.writeFileSync(`./backend/${req.body.id}.JSON`, JSON.stringify(req.body, null, 4));
     res.send('ok');
 });
 
@@ -29,8 +30,8 @@ app.put('/b/:id',(req, res)=>{
     for(let i = 0; i< userBins.length; i++){
         if(userBins[i].id === id){
             userBins[i] = req.body;
-            writeFileSync("userBins.JSON", JSON.stringify(userBins));
-            writeFileSync(`${id}.JSON`, JSON.stringify(req.body));
+            fs.writeFileSync("./backend/userBins.JSON", JSON.stringify(userBins, null, 4));
+            fs.writeFileSync(`./backend/${id}.JSON`, JSON.stringify(req.body, null, 4));
             res.send(req.body);
         }
     }

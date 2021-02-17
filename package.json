@@ -4,7 +4,8 @@
   "description": "This exam will include most of the topics you learn during the last weeks, feel free go back to the mini tasks you had and use them for solving this exam. This repository include basic structure for todo list application you can change or modify it. [For more details](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div) The task is to create a todo application by following the requirements",
   "main": "main.js",
   "scripts": {
-    "test": "jest --verbose"
+    "test": "jest --verbose",
+    "dev": "nodemon ./backend/index.js"
   },
   "repository": {
     "type": "git",
