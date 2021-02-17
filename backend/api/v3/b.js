@@ -1,5 +1,7 @@
 const express = require('express');
 const fs = require('fs');
+const idCheck = require("../../utils");
+
 const router = express.Router();
 router.use(express.json());
 
@@ -15,7 +17,7 @@ router.get('/', (req, res) => {
     res.send({ "record": userBins });
 });
 
-router.get('/:id', (req, res) => {
+router.get('/:id',idCheck , (req, res) => {
     const id = req.params.id;
     try {
         const data = fs.readFileSync(`./backend/bins/${id}.JSON`, 
@@ -23,7 +25,7 @@ router.get('/:id', (req, res) => {
                 res.send({ "record": JSON.parse(data), "metadata": { "id": id }});
     } catch (error) {
         res.status(404);
-        res.send({ "message": "Invalid Bin Id provided" })
+        res.send({ "message": "Bin not found" });
     }
 });
 
@@ -35,7 +37,7 @@ router.post('/',(req, res) => {
     res.send({ "record": bin, "metadata": { "id": id }});
 });
 
-router.put('/:id',(req, res) => {
+router.put('/:id',idCheck ,(req, res) => {
     const id = req.params.id;
     for(let i = 0; i < userBins.length; i++) {
         if(userBins[i].id === id) {
@@ -46,7 +48,7 @@ router.put('/:id',(req, res) => {
     }
 });
 
-router.delete('/:id',(req, res) => {
+router.delete('/:id',idCheck ,(req, res) => {
     const id = req.params.id;
     for(let i = 0; i < userBins.length; i++) {
         if(userBins[i].id === id) {
