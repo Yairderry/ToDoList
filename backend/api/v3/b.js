@@ -5,9 +5,10 @@ router.use(express.json());
 
 let userBins = [];
 fs.readdirSync('./backend/bins').forEach(file => {
-    file = fs.readFileSync(`./backend/bins/${file}`, { encoding:'utf8', flag:'r' });
-    file = JSON.parse(file);
-    userBins.push(file);
+    const bin = JSON.parse(fs.readFileSync(`./backend/bins/${file}`, { encoding:'utf8', flag:'r' }));
+    const id = file.replace('.JSON', '');
+    const binData = {bin, id};
+    userBins.push(binData);
 });
 
 router.get('/', (req, res) => {
@@ -22,17 +23,18 @@ router.get('/:id', (req, res) => {
 });
 
 router.post('/',(req, res) => {
-    userBins.push(req.body);
-    const newID = new Date().getTime();
-    fs.writeFileSync(`./backend/bins/${newID}.JSON`, JSON.stringify(req.body));
-    res.send({ "record": req.body, "metadata": { "id": newID }});
+    const bin = req.body;
+    const id = new Date().getTime();
+    userBins.push({ bin, id });
+    fs.writeFileSync(`./backend/bins/${id}.JSON`, JSON.stringify(bin));
+    res.send({ "record": bin, "metadata": { "id": id }});
 });
 
 router.put('/:id',(req, res) => {
     const id = req.params.id;
     for(let i = 0; i < userBins.length; i++) {
         if(userBins[i].id === id) {
-            userBins[i] = req.body;
+            userBins[i].bin = req.body;
             fs.writeFileSync(`./backend/bins/${id}.JSON`, JSON.stringify(req.body));
             res.send({ "record": req.body, "metadata": { "id": id }});
         }
