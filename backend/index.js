@@ -19,6 +19,8 @@ app.get('/b/:id', (req, res)=>{
 
 app.post('/b',(req, res)=>{
     userBins.push(req.body);
+    writeFileSync("userBins.JSON", JSON.stringify(userBins));
+    writeFileSync(`${req.body.id}.JSON`, JSON.stringify(req.body));
     res.send('ok');
 });
 
