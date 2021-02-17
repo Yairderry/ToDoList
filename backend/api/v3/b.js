@@ -17,9 +17,14 @@ router.get('/', (req, res) => {
 
 router.get('/:id', (req, res) => {
     const id = req.params.id;
-    const data = fs.readFileSync(`./backend/bins/${id}.JSON`, 
-            {encoding:'utf8', flag:'r'});
-    res.send({ "record": JSON.parse(data), "metadata": { "id": id }});
+    try {
+        const data = fs.readFileSync(`./backend/bins/${id}.JSON`, 
+                {encoding:'utf8', flag:'r'});
+                res.send({ "record": JSON.parse(data), "metadata": { "id": id }});
+    } catch (error) {
+        res.status(404);
+        res.send({ "message": "Invalid Bin Id provided" })
+    }
 });
 
 router.post('/',(req, res) => {
