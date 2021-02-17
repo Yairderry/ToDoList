@@ -3,8 +3,6 @@ const fs = require('fs');
 const app = express();
 app.use(express.json());
 
-// const {fs.readFileSync} = require('fs');
-// const {fs.writeFileSync} = require('fs');
 const userBins = JSON.parse(fs.readFileSync('./backend/userBins.JSON', {encoding:'utf8', flag:'r'}));
 
 app.get('/b', (req, res)=>{
@@ -37,7 +35,17 @@ app.put('/b/:id',(req, res)=>{
     }
 });
 
-app.delete('/b',(req, res)=>{
+app.delete('/b/:id',(req, res)=>{
+    const id = req.params.id;
+    for(let i = 0; i< userBins.length; i++){
+        if(userBins[i].id === id){
+            fs.unlinkSync(`./backend/${userBins[i].id}.JSON`);
+            userBins.splice(i, 1);
+            fs.writeFileSync("./backend/userBins.JSON", JSON.stringify(userBins, null, 4));
+            res.send('removed');
+        }
+    }
+    
     for(let i = 0; i< userBins.length; i++){
         if(userBins[i].id === req.body.id){
            userBins.splice(i, 1);
