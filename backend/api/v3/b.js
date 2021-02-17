@@ -31,6 +31,10 @@ router.get('/:id',idCheck , (req, res) => {
 
 router.post('/',(req, res) => {
     const bin = req.body;
+    if (Object.keys(bin).length === 0) {
+        res.status(400);
+        res.send({ "message": "Bin cannot be blank" }); 
+    }
     const id = new Date().getTime();
     userBins.push({ bin, id });
     fs.writeFileSync(`./backend/bins/${id}.JSON`, JSON.stringify(bin));
