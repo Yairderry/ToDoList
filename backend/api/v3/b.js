@@ -5,30 +5,32 @@ const middleware = require("../../utils");
 const router = express.Router();
 router.use(express.json());
 
+// init list of all bins for get, put and delete methods
 let userBins = [];
 fs.readdirSync('./backend/bins').forEach(file => {
     const bin = JSON.parse(fs.readFileSync(`./backend/bins/${file}`, { encoding:'utf8', flag:'r' }));
     const id = file.replace('.JSON', '');
+    // each object in the array is formatted with id for easy access
     const binData = {bin, id};
     userBins.push(binData);
 });
 
+// get method for all the bins
 router.get('/', (req, res) => {
     res.send({ "record": userBins });
 });
 
-router.get('/:id',middleware.idCheck , (req, res) => {
+// get method to read a specific bin
+// middlewares are checking for valid id and existing bin
+router.get('/:id',middleware.idCheck, middleware.binCheck , (req, res) => {
     const id = req.params.id;
-    try {
-        const data = fs.readFileSync(`./backend/bins/${id}.JSON`, 
-                {encoding:'utf8', flag:'r'});
-                res.send({ "record": JSON.parse(data), "metadata": { "id": id }});
-    } catch (error) {
-        res.status(404);
-        res.send({ "message": "Bin not found" });
-    }
+    const data = fs.readFileSync(`./backend/bins/${id}.JSON`, 
+            {encoding:'utf8', flag:'r'});
+            res.send({ "record": JSON.parse(data), "metadata": { "id": id }});
 });
 
+// post method to create a new bin
+// middlewares are checking if bin has content
 router.post('/', middleware.blankBinCheck, (req, res) => {
     const bin = req.body;
     const id = new Date().getTime();
@@ -37,7 +39,9 @@ router.post('/', middleware.blankBinCheck, (req, res) => {
     res.send({ "record": bin, "metadata": { "id": id }});
 });
 
-router.put('/:id',middleware.idCheck ,(req, res) => {
+// gut method to update a specific bin
+// middlewares are checking for valid id and existing bin
+router.put('/:id',middleware.idCheck, middleware.binCheck ,(req, res) => {
     const id = req.params.id;
     for(let i = 0; i < userBins.length; i++) {
         if(userBins[i].id === id) {
@@ -48,7 +52,9 @@ router.put('/:id',middleware.idCheck ,(req, res) => {
     }
 });
 
-router.delete('/:id',middleware.idCheck ,(req, res) => {
+// delete method to remove a specific bin
+// middlewares are checking for valid id and existing bin
+router.delete('/:id',middleware.idCheck, middleware.binCheck ,(req, res) => {
     const id = req.params.id;
     for(let i = 0; i < userBins.length; i++) {
         if(userBins[i].id === id) {

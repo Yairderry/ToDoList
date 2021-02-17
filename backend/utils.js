@@ -1,3 +1,6 @@
+const fs = require('fs');
+
+// id is the Date.getTime method that returns a 13 digit number, anything else is invalid id
 const idCheck = (req, res, next) => {
   const { id } = req.params;
 
@@ -9,6 +12,7 @@ const idCheck = (req, res, next) => {
   next();
 };
 
+// JSONbin does not allow to create an emtpy bin
 const blankBinCheck = (req, res, next) => {
   const bin = req.body;
     if (Object.keys(bin).length === 0) {
@@ -19,4 +23,19 @@ const blankBinCheck = (req, res, next) => {
   next();
 };
 
-module.exports = { idCheck: idCheck, blankBinCheck: blankBinCheck };
+// checking if a certain bin exist in database
+const binCheck = (req, res, next) => {
+  const { id } = req.params;
+  let userBins = fs.readdirSync('./backend/bins');
+
+  for(let i = 0; i < userBins.length; i++) {
+    if(userBins[i] === `${id}.JSON`) {
+      next();
+    }
+  }
+
+  res.status(404);
+  res.send({ "message": "Bin not found" });
+};
+
+module.exports = { idCheck: idCheck, blankBinCheck: blankBinCheck, binCheck: binCheck };
