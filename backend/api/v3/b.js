@@ -1,6 +1,6 @@
 const express = require('express');
 const fs = require('fs');
-const idCheck = require("../../utils");
+const middleware = require("../../utils");
 
 const router = express.Router();
 router.use(express.json());
@@ -17,7 +17,7 @@ router.get('/', (req, res) => {
     res.send({ "record": userBins });
 });
 
-router.get('/:id',idCheck , (req, res) => {
+router.get('/:id',middleware.idCheck , (req, res) => {
     const id = req.params.id;
     try {
         const data = fs.readFileSync(`./backend/bins/${id}.JSON`, 
@@ -29,19 +29,15 @@ router.get('/:id',idCheck , (req, res) => {
     }
 });
 
-router.post('/',(req, res) => {
+router.post('/', middleware.blankBinCheck, (req, res) => {
     const bin = req.body;
-    if (Object.keys(bin).length === 0) {
-        res.status(400);
-        res.send({ "message": "Bin cannot be blank" }); 
-    }
     const id = new Date().getTime();
     userBins.push({ bin, id });
     fs.writeFileSync(`./backend/bins/${id}.JSON`, JSON.stringify(bin));
     res.send({ "record": bin, "metadata": { "id": id }});
 });
 
-router.put('/:id',idCheck ,(req, res) => {
+router.put('/:id',middleware.idCheck ,(req, res) => {
     const id = req.params.id;
     for(let i = 0; i < userBins.length; i++) {
         if(userBins[i].id === id) {
@@ -52,7 +48,7 @@ router.put('/:id',idCheck ,(req, res) => {
     }
 });
 
-router.delete('/:id',idCheck ,(req, res) => {
+router.delete('/:id',middleware.idCheck ,(req, res) => {
     const id = req.params.id;
     for(let i = 0; i < userBins.length; i++) {
         if(userBins[i].id === id) {
