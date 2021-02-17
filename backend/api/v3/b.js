@@ -23,8 +23,9 @@ router.get('/:id', (req, res) => {
 
 router.post('/',(req, res) => {
     userBins.push(req.body);
-    fs.writeFileSync(`./backend/bins/${req.body.id}.JSON`, JSON.stringify(req.body));
-    res.send({ "record": req.body, "metadata": { "id": req.body.id }});
+    const newID = new Date().getTime();
+    fs.writeFileSync(`./backend/bins/${newID}.JSON`, JSON.stringify(req.body));
+    res.send({ "record": req.body, "metadata": { "id": newID }});
 });
 
 router.put('/:id',(req, res) => {
