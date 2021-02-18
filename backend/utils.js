@@ -38,4 +38,13 @@ const binCheck = (req, res, next) => {
   res.send({ "message": "Bin not found" });
 };
 
-module.exports = { idCheck: idCheck, blankBinCheck: blankBinCheck, binCheck: binCheck };
+const delay = (req, res, next) => {
+  setTimeout(next, 1000);
+}
+
+module.exports = {
+  idCheck: idCheck,
+  blankBinCheck: blankBinCheck,
+  binCheck: binCheck,
+  delay: delay
+};

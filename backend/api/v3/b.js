@@ -4,6 +4,7 @@ const middleware = require("../../utils");
 
 const router = express.Router();
 router.use(express.json());
+router.use(middleware.delay);
 
 // init list of all bins for get, put and delete methods
 let userBins = [];
