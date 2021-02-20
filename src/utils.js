@@ -31,7 +31,7 @@ function getPersistent(key) {
   }).catch(error => {
       loader.classList.add('request-failed');
       loader.classList.remove('loader');
-      loader.textContent = error;
+      loader.textContent = "Error: failed to get data from server";
   })
   return dataPromise;
 }
