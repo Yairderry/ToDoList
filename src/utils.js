@@ -5,16 +5,15 @@ const URL = "http://localhost:3000/api/v3/b/1613581577675";
 // Gets data from persistent storage by the given key and returns it
 function getPersistent(key) {
   const init = {
-    method: "GET",
-    headers: {
-      "X-Master-Key": API_KEY
-    }
+    method: "GET"
   };
   const request = new Request(URL, init);
   const loader = createLoader();
   let dataPromise = fetch(request).then(res => {
     if (!res.ok) {
-      throw new Error("Error: failed to get data from server");
+      return res.json().then(data => {
+        throw new Error(data.message);
+      })
     }
 
     viewSection.innerHTML = '';
@@ -32,6 +31,7 @@ function getPersistent(key) {
       loader.classList.add('request-failed');
       loader.classList.remove('loader');
       loader.textContent = "Error: failed to get data from server";
+      console.log(error);
   })
   return dataPromise;
 }
@@ -43,9 +43,7 @@ function setPersistent(key, data) {
   const init = {
     method: "PUT",
     headers: {
-      "X-Master-Key": API_KEY,
-      "Content-Type": "application/json",
-      "X-Bin-Versioning": false
+      "Content-Type": "application/json"
     },
     body: JSON.stringify(dataObj)
   };
@@ -53,13 +51,16 @@ function setPersistent(key, data) {
   const request = new Request(URL, init);
   fetch(request).then(res => {
     if (!res.ok) {
-      throw new Error("Error: failed to send data to server");
+      return res.json().then(data => {
+        throw new Error(data.message);
+      })
     }
 
     viewSection.removeChild(loader);
   }).catch(error => {
     loader.classList.add('request-failed');
     loader.classList.remove('loader');
-    loader.textContent = error;
+    console.log(error);
+    loader.innerHTML = "Error: failed to send data to server.<br>Changes will not be saved.";
 })
 }
