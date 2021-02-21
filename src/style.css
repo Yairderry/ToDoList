@@ -1,4 +1,5 @@
-html, body {
+html,
+body {
   width: 100%;
   height: 100%;
   margin: 0%;
@@ -7,7 +8,11 @@ html, body {
   box-sizing: border-box;
   justify-content: center;
   text-align: center;
-  background: linear-gradient(to right top, rgb(84, 173, 173),  rgb(77, 180, 132));
+  background: linear-gradient(
+    to right top,
+    rgb(84, 173, 173),
+    rgb(77, 180, 132)
+  );
 }
 
 main {
@@ -18,23 +23,32 @@ main {
   width: 70%;
   height: fit-content;
   border-radius: 15px;
-  background: linear-gradient(to left bottom, rgb(255, 255, 255, 0.7),  rgb(255, 255, 255, 0.3));
+  background: linear-gradient(
+    to left bottom,
+    rgb(255, 255, 255, 0.7),
+    rgb(255, 255, 255, 0.3)
+  );
   z-index: 3;
   backdrop-filter: blur(0.5rem);
-  box-shadow: 4px 3px 25px -3px rgba(0,0,0,0.4);
+  box-shadow: 4px 3px 25px -3px rgba(0, 0, 0, 0.4);
   margin-top: 20px;
   color: rgba(32, 97, 86, 0.9);
-  font-family: 'Ubuntu', sans-serif;
+  font-family: "Ubuntu", sans-serif;
 }
 
 /* background elements */
-.circle1, .circle2 {
+.circle1,
+.circle2 {
   background-color: white;
   height: 130px;
   width: 130px;
   border-radius: 50%;
   position: absolute;
-  background: linear-gradient(to left top, rgb(255, 255, 255, 0.8),  rgb(255, 255, 255, 0.6));
+  background: linear-gradient(
+    to left top,
+    rgb(255, 255, 255, 0.8),
+    rgb(255, 255, 255, 0.6)
+  );
 }
 
 .circle1 {
@@ -80,7 +94,7 @@ h1 {
 
 #tasks-done-bar {
   display: flex;
-  box-shadow: 4px 3px 5px -3px rgba(0,0,0,0.7);
+  box-shadow: 4px 3px 5px -3px rgba(0, 0, 0, 0.7);
   width: 300px;
   height: 20px;
   border-radius: 15px;
@@ -99,8 +113,12 @@ h1 {
 }
 
 #task-form {
-  background: linear-gradient(to left top, rgb(255, 255, 255, 0.8),  rgb(255, 255, 255, 0.4));
-  box-shadow: 3px 3px 10px -3px rgba(0,0,0,0.7);
+  background: linear-gradient(
+    to left top,
+    rgb(255, 255, 255, 0.8),
+    rgb(255, 255, 255, 0.4)
+  );
+  box-shadow: 3px 3px 10px -3px rgba(0, 0, 0, 0.7);
   border-radius: 7px;
   padding: 10px;
   margin: 10px;
@@ -115,8 +133,9 @@ label {
   display: block;
 }
 
-#control-section input, select {
-  font-family: 'Ubuntu', sans-serif;
+#control-section input,
+select {
+  font-family: "Ubuntu", sans-serif;
   margin: 5px;
   border: none;
   outline: none;
@@ -137,30 +156,42 @@ label {
 
 /* each control-button */
 .control-button {
-  font-family: 'Ubuntu', sans-serif;
+  font-family: "Ubuntu", sans-serif;
   text-align: center;
   width: fit-content;
   vertical-align: middle;
   padding: 4px 5px;
   border-radius: 10px;
   border: none;
-  background: linear-gradient(to right top, rgba(84, 173, 173, 0.8),  rgba(77, 180, 132, 0.5));
-  box-shadow: 4px 3px 5px -3px rgba(0,0,0,0.7);
+  background: linear-gradient(
+    to right top,
+    rgba(84, 173, 173, 0.8),
+    rgba(77, 180, 132, 0.5)
+  );
+  box-shadow: 4px 3px 5px -3px rgba(0, 0, 0, 0.7);
   outline: none;
 }
 
 .control-button:hover {
-  background: linear-gradient(to right top, rgba(84, 173, 173, 1),  rgba(77, 180, 132, 1));
+  background: linear-gradient(
+    to right top,
+    rgba(84, 173, 173, 1),
+    rgba(77, 180, 132, 1)
+  );
 }
 
 .control-button:active {
-  background: linear-gradient(to right top, rgb(75, 141, 141),  rgb(68, 141, 107));
+  background: linear-gradient(
+    to right top,
+    rgb(75, 141, 141),
+    rgb(68, 141, 107)
+  );
   box-shadow: none;
 }
 
 #undo-button::before {
   background: url(./icons/undo-icon.png) no-repeat left center transparent;
-  content:  "";
+  content: "";
   display: inline-block;
   height: 12px;
   width: 12px;
@@ -169,7 +200,7 @@ label {
 
 #search-button:before {
   background: url(./icons/search-icon.png) no-repeat left center transparent;
-  content:  "";
+  content: "";
   display: inline-block;
   height: 12px;
   width: 12px;
@@ -181,7 +212,7 @@ label {
   width: fit-content;
   overflow: hidden;
   border-radius: 10px;
-  box-shadow: 4px 3px 5px -3px rgba(0,0,0,0.7);
+  box-shadow: 4px 3px 5px -3px rgba(0, 0, 0, 0.7);
 }
 
 #search-button {
@@ -190,8 +221,12 @@ label {
 }
 
 #search-bar input {
-  font-family: 'Ubuntu', sans-serif;
-  background: linear-gradient(to left top, rgb(255, 255, 255, 0.8),  rgb(255, 255, 255, 0.6));
+  font-family: "Ubuntu", sans-serif;
+  background: linear-gradient(
+    to left top,
+    rgb(255, 255, 255, 0.8),
+    rgb(255, 255, 255, 0.6)
+  );
   border: none;
   width: 60px;
   margin: 0%;
@@ -205,14 +240,18 @@ label {
   width: 100%;
   border-radius: 5px;
   overflow: hidden;
-  background: linear-gradient(to right top, rgba(84, 173, 173, 0.8),  rgba(77, 180, 132, 0.5));
-  box-shadow: 4px 3px 5px -3px rgba(0,0,0,0.7);
+  background: linear-gradient(
+    to right top,
+    rgba(84, 173, 173, 0.8),
+    rgba(77, 180, 132, 0.5)
+  );
+  box-shadow: 4px 3px 5px -3px rgba(0, 0, 0, 0.7);
   box-sizing: border-box;
 }
 
 /* each sorting button */
 .sorting-button {
-  font-family: 'Ubuntu', sans-serif;
+  font-family: "Ubuntu", sans-serif;
   display: inline-block;
   text-align: center;
   vertical-align: middle;
@@ -224,34 +263,53 @@ label {
 }
 
 .sorting-button:hover {
-  background: linear-gradient(to right top, rgba(84, 173, 173, 1),  rgba(77, 180, 132, 1));
-  
+  background: linear-gradient(
+    to right top,
+    rgba(84, 173, 173, 1),
+    rgba(77, 180, 132, 1)
+  );
 }
 
 .sorting-button:active {
-  background: linear-gradient(to right top, rgb(75, 141, 141),  rgb(68, 141, 107));
+  background: linear-gradient(
+    to right top,
+    rgb(75, 141, 141),
+    rgb(68, 141, 107)
+  );
   box-shadow: none;
 }
 
 #save-order-button {
-  content: 'Save order';
+  content: "Save order";
   border: none;
-  background: linear-gradient(to right top, rgba(143, 169, 255, 0.7),  rgba(77, 147, 180, 0.9));
+  background: linear-gradient(
+    to right top,
+    rgba(143, 169, 255, 0.7),
+    rgba(77, 147, 180, 0.9)
+  );
 }
 
 #save-order-button::before {
-  content: 'Save order';
+  content: "Save order";
 }
 
 #save-order-button:hover {
-  background: linear-gradient(to right top, rgba(101, 120, 182, 0.7),  rgba(53, 102, 124, 0.9));
+  background: linear-gradient(
+    to right top,
+    rgba(101, 120, 182, 0.7),
+    rgba(53, 102, 124, 0.9)
+  );
 }
 #save-order-button:active {
-  background: linear-gradient(to right top, rgba(101, 120, 182, 1),  rgba(53, 102, 124, 1));
+  background: linear-gradient(
+    to right top,
+    rgba(101, 120, 182, 1),
+    rgba(53, 102, 124, 1)
+  );
 }
 
 #sort-button::before {
-  content: 'Priority';
+  content: "Priority";
 }
 
 #sort-by-date,
@@ -293,22 +351,36 @@ label {
 }
 
 @keyframes move {
-  0% { transform: translateX(0px); }
-  50% { transform: translateX(60vw); }
-  100% { transform: translateX(0px); }
+  0% {
+    transform: translateX(0px);
+  }
+  50% {
+    transform: translateX(60vw);
+  }
+  100% {
+    transform: translateX(0px);
+  }
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .todo-container {
-  background: linear-gradient(to left top, rgb(255, 255, 255, 1),  rgb(255, 255, 255, 0.8));
+  background: linear-gradient(
+    to left top,
+    rgb(255, 255, 255, 1),
+    rgb(255, 255, 255, 0.8)
+  );
   border-radius: 5px;
   padding: 5px;
   margin: 5px 0px;
-  box-shadow: 3px 4px 16px -3px rgba(80,80,80,1);
+  box-shadow: 3px 4px 16px -3px rgba(80, 80, 80, 1);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -316,7 +388,9 @@ label {
 
 /* animation starts when clicking delete-button */
 @keyframes leave {
-  100% { transform: translateX(100vw); }
+  100% {
+    transform: translateX(100vw);
+  }
 }
 
 .todo-container.dragging {
@@ -324,7 +398,8 @@ label {
   opacity: 0.5;
 }
 
-.todo-text, .todo-created-at {
+.todo-text,
+.todo-created-at {
   flex: 1;
   max-width: 33%;
   word-wrap: break-word;
@@ -350,7 +425,7 @@ label {
   outline: none;
 }
 
-.task-button:hover { 
+.task-button:hover {
   background-color: rgb(199, 199, 199);
   outline: none;
 }
@@ -362,7 +437,7 @@ label {
 
 .undone-button::before {
   background: url(./icons/undone-icon.png) no-repeat left center transparent;
-  content:  "";
+  content: "";
   display: inline-block;
   height: 12px;
   width: 12px;
@@ -371,7 +446,7 @@ label {
 
 .done-button::before {
   background: url(./icons/done-icon.png) no-repeat left center transparent;
-  content:  "";
+  content: "";
   display: inline-block;
   height: 12px;
   width: 12px;
@@ -380,7 +455,7 @@ label {
 
 .edit-button::before {
   background: url(./icons/edit-icon.png) no-repeat left center transparent;
-  content:  "";
+  content: "";
   display: inline-block;
   height: 12px;
   width: 12px;
@@ -389,7 +464,7 @@ label {
 
 .delete-button::before {
   background: url(./icons/bin-icon.png) no-repeat left center transparent;
-  content:  "";
+  content: "";
   display: inline-block;
   height: 12px;
   width: 12px;
@@ -398,7 +473,7 @@ label {
 
 .save-button::before {
   background: url(./icons/save-icon.png) no-repeat left center transparent;
-  content:  "";
+  content: "";
   display: inline-block;
   height: 12px;
   width: 12px;
@@ -406,7 +481,7 @@ label {
 }
 
 .edit-box {
-  font-family: 'Ubuntu', sans-serif;
+  font-family: "Ubuntu", sans-serif;
   border: none;
   outline: none;
   border-bottom: 1px solid rgba(32, 97, 86, 0.9);
@@ -424,12 +499,11 @@ label {
   text-decoration: line-through;
 }
 
-
 .highlight {
   background-color: rgba(255, 255, 75, 0.849);
 }
 
-@media(max-width:900px) {
+@media (max-width: 900px) {
   main {
     width: 95%;
     margin-top: 2.5%;
@@ -442,7 +516,7 @@ label {
   #task-form {
     width: 90%;
   }
-  
+
   #control-buttons {
     width: 95%;
   }
@@ -452,11 +526,11 @@ label {
   }
 
   #save-order-button::before {
-    content: 'save';
+    content: "save";
   }
 
   #sort-button::before {
-    content: 'Prior';
+    content: "Prior";
   }
 
   #view-section {
@@ -471,9 +545,15 @@ label {
   }
 
   @keyframes move {
-    0% { transform: translateX(0px); }
-    50% { transform: translateX(85vw); }
-    100% { transform: translateX(0px); }
+    0% {
+      transform: translateX(0px);
+    }
+    50% {
+      transform: translateX(85vw);
+    }
+    100% {
+      transform: translateX(0px);
+    }
   }
 
   .empty-list {
