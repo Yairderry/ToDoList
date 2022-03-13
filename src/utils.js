@@ -1,21 +1,21 @@
-const API_KEY = "$2b$10$xNclmgx/GVpbpMcRyHz5cOe1TnwSr9WeXB05.J21A1R1xWt/MXZBS";
+const API_KEY = "$2b$10$r.MjCpJXyzgFQXsF9WzQP.LAwuGkAnCZzSRlacrWnEQimqW.7gDXO";
 const DB_NAME = "my-todo";
-const URL = "https://api.jsonbin.io/v3/b/6012df127bfaff74c3995478";
+const URL = "https://api.jsonbin.io/v3/b/622e4fc77caf5d678367cc21";
 
 // Gets data from persistent storage by the given key and returns it
 async function getPersistent(key) {
   const init = {
     method: "GET",
     headers: {
-      "X-Master-Key": API_KEY
-    }
+      "X-Master-Key": API_KEY,
+    },
   };
   const request = new Request(URL, init);
-  const viewSection = document.querySelector('#view-section');
+  const viewSection = document.querySelector("#view-section");
   viewSection.innerHTML = `<div class="loader"></div>`;
   let data = await fetch(request);
   data = await data.json();
-  viewSection.innerHTML = '';
+  viewSection.innerHTML = "";
   return data.record[key];
 }
 
@@ -29,9 +29,9 @@ async function setPersistent(key, data) {
     headers: {
       "X-Master-Key": API_KEY,
       "Content-Type": "application/json",
-      "X-Bin-Versioning": false
+      "X-Bin-Versioning": false,
     },
-    body: JSON.stringify(dataObj)
+    body: JSON.stringify(dataObj),
   };
   const request = new Request(URL, init);
   let response = await fetch(request);
